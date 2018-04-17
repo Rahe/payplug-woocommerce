@@ -50,6 +50,18 @@ class PayplugWoocommerce {
 	 */
 	private function __construct() {
 
+		// Bail early if WooCommerce is not activated
+		if ( ! defined( 'WC_VERSION' ) ) {
+			add_action( 'admin_notices', function () {
+				?>
+				<div id="message" class="updated notice">
+					<p><?php _e( 'PayPlug require WooCommerce to ba activated to work.', 'payplug' ); ?></p>
+				</div>
+				<?php
+			} );
+			return;
+		}
+
 		$this->notices = new Notices();
 
 		add_action( 'woocommerce_payment_gateways', [ $this, 'register_payplug_gateway' ] );
