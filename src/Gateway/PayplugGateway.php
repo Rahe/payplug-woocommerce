@@ -35,6 +35,19 @@ class PayplugGateway extends WC_Payment_Gateway {
 		$this->init_settings();
 		$this->init_form_fields();
 
+		$this->title          = $this->get_option( 'title' );
+		$this->description    = $this->get_option( 'description' );
+		$this->mode           = 'yes' === $this->get_option( 'mode', 'no' ) ? 'live' : 'test';
+		$this->debug          = 'yes' === $this->get_option( 'debug', 'no' );
+		$this->email          = $this->get_option( 'email' );
+		$this->payment_method = $this->get_option( 'payment_method' );
+		$this->oneclick       = 'yes' === $this->get_option( 'oneclick', 'no' );
+
+		if ( 'test' === $this->mode ) {
+			$this->description .= ' ' . __( 'You are in TEST MODE. In test mode you can use the card 4242424242424242 with any valid expiration date and CVC.' );
+			$this->description = trim( $this->description );
+		}
+
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'process_admin_options' ] );
 	}
 
