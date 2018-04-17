@@ -225,6 +225,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 			$data                     = get_option( $this->get_option_key() );
 			$data['payplug_test_key'] = '';
 			$data['payplug_live_key'] = '';
+			$data['enabled']          = 'no';
 			$data['mode']             = 'no';
 			update_option( $this->get_option_key(),
 				apply_filters( 'woocommerce_settings_api_sanitized_fields_' . $this->id, $data ) );
