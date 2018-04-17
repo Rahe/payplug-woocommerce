@@ -258,10 +258,10 @@ class PayplugGateway extends WC_Payment_Gateway {
 
 				switch ( $key ) {
 					case 'payplug_test_key':
-						$val = $response['test'];
+						$val = esc_attr( $response['test'] );
 						break;
 					case 'payplug_live_key':
-						$val = $response['live'];
+						$val = esc_attr( $response['live'] );
 						break;
 					case 'email':
 						$val = esc_html( $email );
