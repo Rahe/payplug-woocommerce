@@ -32,4 +32,26 @@ class PayplugWoocommerceHelper {
 
 		return admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . $section_slug );
 	}
+
+	/**
+	 * Get minimum amount allowed by PayPlug.
+	 *
+	 * This amount is in cents.
+	 *
+	 * @return int
+	 */
+	public static function get_minimum_amount() {
+		return 100;
+	}
+
+	/**
+	 * Get maximum amount allowed by PayPlug.
+	 *
+	 * This amount is in cents.
+	 *
+	 * @return int
+	 */
+	public static function get_maximum_amount() {
+		return 2000000;
+	}
 }
