@@ -56,7 +56,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 				'type'        => 'checkbox',
 				'label'       => __( 'Enable PayPlug', 'payplug' ),
 				'description' => __( 'This gateway can only be enable for shop using euro has currency.', 'payplug' ),
-				'default'     => 'no',
+				'default'     => 'yes',
 			],
 			'title'                   => [
 				'title'       => __( 'Title', 'payplug' ),
@@ -103,7 +103,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 				'yes'         => 'Live',
 				'no'          => 'Test',
 				'description' => __( 'Place the payment gateway in test mode using test API keys.', 'payplug' ),
-				'default'     => 'yes',
+				'default'     => 'no',
 				'hide_label'  => true,
 			],
 			'title_settings'          => [
