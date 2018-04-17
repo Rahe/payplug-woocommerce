@@ -266,6 +266,9 @@ class PayplugGateway extends WC_Payment_Gateway {
 					case 'email':
 						$val = esc_html( $email );
 						break;
+					case 'mode':
+						$val = 'no';
+						break;
 					default:
 						$val = $this->get_option( $key );
 				}
