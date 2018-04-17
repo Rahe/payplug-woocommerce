@@ -286,9 +286,9 @@ class PayplugGateway extends WC_Payment_Gateway {
 		}
 
 		// Don't let user without live key leave TEST mode.
-		$mode_fieldkey = $this->get_field_key( 'mode' );
+		$mode_fieldkey     = $this->get_field_key( 'mode' );
 		$live_key_fieldkey = $this->get_field_key( 'payplug_live_key' );
-		if ( isset( $data[ $mode_fieldkey ] ) && empty( $data[ $live_key_fieldkey ] ) ) {
+		if ( isset( $data[ $mode_fieldkey ] ) && '1' === $data[ $mode_fieldkey ] && empty( $data[ $live_key_fieldkey ] ) ) {
 			$data[ $mode_fieldkey ] = '0';
 			$this->set_post_data( $data );
 			\WC_Admin_Settings::add_error( __( 'Your account does not currently support LIVE mode, it need to be approved first. If your account has already been approved, please log out and log back in.', 'payplug' ) );
