@@ -179,7 +179,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 				<tbody>
 				<tr valign="top">
 					<th scope="row" class="titledesc">
-						<label for="payplug_email"><?php _e( 'Login', 'payplug' ); ?></label>
+						<label for="payplug_email"><?php _e( 'Email', 'payplug' ); ?></label>
 					</th>
 					<td class="forminp">
 						<fieldset>
