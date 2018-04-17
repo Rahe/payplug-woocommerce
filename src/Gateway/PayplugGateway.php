@@ -25,7 +25,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 		$this->id                 = 'payplug';
 		$this->icon               = '';
 		$this->has_fields         = false;
-		$this->method_title       = __( 'PayPlug', 'payplug' );
+		$this->method_title       = _x( 'PayPlug', 'Gateway method title', 'payplug' );
 		$this->method_description = __( 'Let your customers pay with PayPlug', 'payplug' );
 		$this->supports           = array(
 			'products',
