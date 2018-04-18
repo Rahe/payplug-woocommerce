@@ -76,6 +76,10 @@ class PayplugGateway extends WC_Payment_Gateway {
 			$this->description = trim( $this->description );
 		}
 
+		if ( $this->enabled ) {
+			$this->init_payplug();
+		}
+
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'process_admin_options' ] );
 	}
 
@@ -183,6 +187,24 @@ class PayplugGateway extends WC_Payment_Gateway {
 				'desc_tip'    => true,
 			],
 		];
+	}
+
+	/**
+	 *
+	 */
+	public function init_payplug() {
+		$current_mode = $this->get_current_mode();
+		$key          = $this->get_api_key( $current_mode );
+
+		Payplug::setSecretKey( $key );
+		HttpClient::addDefaultUserAgentProduct(
+			'PayPlug-WooCommerce',
+			PAYPLUG_GATEWAY_VERSION,
+			sprintf( 'WooCommerce/%s', WC()->version )
+		);
+
+		// Register IPN handler
+		new PayplugIpnResponse();
 	}
 
 	/**
