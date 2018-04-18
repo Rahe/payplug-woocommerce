@@ -63,9 +63,8 @@ class PayplugPermissions {
 	 * Load permissions for the current mode.
 	 */
 	protected function load_permissions() {
-		$payplug = $this->gateway->get_payplug();
 		try {
-			$response          = Authentication::getPermissions( $payplug );
+			$response          = Authentication::getPermissions();
 			$this->permissions = ! empty( $response ) ? $response : [];
 		} catch ( ConfigurationNotSetException $e ) {
 			$this->permissions = [];
