@@ -471,10 +471,12 @@ class PayplugGateway extends WC_Payment_Gateway {
 		ob_start();
 		?>
 		<tr valign="top">
-			<th scope="row" class="titledesc">
-				<?php echo $this->get_tooltip_html( $data ); ?>
-				<label for="<?php echo esc_attr( $field_key ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></label>
-			</th>
+			<?php if ( ! $data['hide_label'] ) : ?>
+				<th scope="row" class="titledesc">
+					<?php echo $this->get_tooltip_html( $data ); ?>
+					<label for="<?php echo esc_attr( $field_key ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></label>
+				</th>
+			<?php endif; ?>
 			<td class="forminp">
 				<fieldset>
 					<legend class="screen-reader-text"><span><?php echo wp_kses_post( $data['title'] ); ?></span>
