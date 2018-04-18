@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Payplug 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/payplug\n"
-"POT-Creation-Date: 2018-04-17 09:22:45+00:00\n"
+"POT-Creation-Date: 2018-04-18 12:51:52+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,7 +12,7 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: src/Admin/Notices.php:123 src/Gateway/PayplugGateway.php:207
+#: src/Admin/Notices.php:123 src/Gateway/PayplugGateway.php:274
 msgid "Login"
 msgstr ""
 
@@ -32,148 +32,158 @@ msgid ""
 "real transactions."
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:28
+#: src/Gateway/PayplugGateway.php:58
 msgctxt "Gateway method title"
 msgid "PayPlug"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:29
+#: src/Gateway/PayplugGateway.php:59
 msgid "Let your customers pay with PayPlug"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:55
+#: src/Gateway/PayplugGateway.php:79
+msgid ""
+"You are in TEST MODE. In test mode you can use the card 4242424242424242 "
+"with any valid expiration date and CVC."
+msgstr ""
+
+#: src/Gateway/PayplugGateway.php:104
 msgid "Enable/Disable"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:57
+#: src/Gateway/PayplugGateway.php:106
 msgid "Enable PayPlug"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:58
+#: src/Gateway/PayplugGateway.php:107
 msgid "This gateway can only be enable for shop using euro has currency."
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:62
+#: src/Gateway/PayplugGateway.php:111
 msgid "Title"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:64
+#: src/Gateway/PayplugGateway.php:113
 msgid "This controls the title which the user sees during checkout."
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:65
+#: src/Gateway/PayplugGateway.php:114
 msgid "PayPlug"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:69
+#: src/Gateway/PayplugGateway.php:118
 msgid "Description"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:72
+#: src/Gateway/PayplugGateway.php:121
 msgid "This controls the description which the user sees during checkout."
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:73
+#: src/Gateway/PayplugGateway.php:122
 msgid "Pay via PayPlug."
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:76 src/Gateway/PayplugGateway.php:177
+#: src/Gateway/PayplugGateway.php:125 src/Gateway/PayplugGateway.php:244
 msgid "Connexion"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:96
+#: src/Gateway/PayplugGateway.php:145
 msgid "Mode"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:105
+#: src/Gateway/PayplugGateway.php:154
 msgid "Place the payment gateway in test mode using test API keys."
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:110 src/PayplugWoocommerce.php:92
+#: src/Gateway/PayplugGateway.php:159 src/PayplugWoocommerce.php:92
 msgid "Settings"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:114
+#: src/Gateway/PayplugGateway.php:163
 msgid "Payment method"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:116 src/Gateway/PayplugGateway.php:140
+#: src/Gateway/PayplugGateway.php:165 src/Gateway/PayplugGateway.php:189
 msgid "Choose which payment method will be used."
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:120
+#: src/Gateway/PayplugGateway.php:169
 msgid "Redirect"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:121
+#: src/Gateway/PayplugGateway.php:170
 msgid "Embedded"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:125
+#: src/Gateway/PayplugGateway.php:174
 msgid "Debug"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:127
+#: src/Gateway/PayplugGateway.php:176
 msgid "Enable Debug Mode"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:131
+#: src/Gateway/PayplugGateway.php:180
 msgid "Advanced Settings"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:132
+#: src/Gateway/PayplugGateway.php:181
 msgid ""
 "Those settings require a premium account. But you can try them in TEST mode."
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:137
+#: src/Gateway/PayplugGateway.php:186
 msgid "One Click Payment"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:139
+#: src/Gateway/PayplugGateway.php:188
 msgid "Activate"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:182 src/Gateway/PayplugGateway.php:186
+#: src/Gateway/PayplugGateway.php:249 src/Gateway/PayplugGateway.php:253
 msgid "Email"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:188
+#: src/Gateway/PayplugGateway.php:255
 msgid "your@email.com"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:194 src/Gateway/PayplugGateway.php:198
+#: src/Gateway/PayplugGateway.php:261 src/Gateway/PayplugGateway.php:265
 msgid "Password"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:231
+#: src/Gateway/PayplugGateway.php:299
 msgid "Successfully logged out."
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:282
+#: src/Gateway/PayplugGateway.php:350
 msgid "Successfully logged in."
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:293
+#: src/Gateway/PayplugGateway.php:361
 msgid ""
 "Your account does not currently support LIVE mode, it need to be approved "
 "first. If your account has already been approved, please log out and log "
 "back in."
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:329
+#: src/Gateway/PayplugGateway.php:431
+msgid "Total amount of %s is not in the allowed range."
+msgstr ""
+
+#: src/Gateway/PayplugGateway.php:464
 msgid "Please fill all login fields"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:335 src/Gateway/PayplugGateway.php:340
+#: src/Gateway/PayplugGateway.php:470 src/Gateway/PayplugGateway.php:475
 msgid "Your credentials are invalid."
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:524
+#: src/Gateway/PayplugGateway.php:661
 msgid "Logout"
 msgstr ""
 
-#: src/Gateway/PayplugGateway.php:527
+#: src/Gateway/PayplugGateway.php:664
 msgid "Go to my dashboard"
 msgstr ""
 
@@ -207,6 +217,14 @@ msgstr ""
 
 #: src/Gateway/PayplugGatewayRequirements.php:76
 msgid "You must logged in to your PayPlug account."
+msgstr ""
+
+#: src/Gateway/PayplugIpnResponse.php:83
+msgid "PayPlug IPN OK | Transaction #%s"
+msgstr ""
+
+#: src/Gateway/PayplugIpnResponse.php:97
+msgid "PayPlug IPN OK | Transaction #%s failed : %s"
 msgstr ""
 
 #: src/PayplugWoocommerce.php:58
