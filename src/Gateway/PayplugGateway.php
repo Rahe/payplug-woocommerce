@@ -590,7 +590,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 					<input type="submit" name="submit_logout" value="<?php _e( 'Logout', 'payplug' ); ?>">
 					<?php wp_nonce_field( 'payplug_user_logout', '_logoutaction' ); ?>
 					|
-					<a href="https://portal.payplug.com"><?php _e( 'Go to my dashboard', 'payplug' ); ?></a>
+					<a href="https://portal.payplug.com" target="_blank"><?php _e( 'Go to my dashboard', 'payplug' ); ?></a>
 				</p>
 			</td>
 		</tr>
