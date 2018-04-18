@@ -194,7 +194,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 	}
 
 	/**
-	 *
+	 * Set global configuration for PayPlug instance.
 	 */
 	public function init_payplug() {
 		$current_mode = $this->get_current_mode();
