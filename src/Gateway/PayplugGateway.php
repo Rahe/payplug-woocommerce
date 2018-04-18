@@ -21,6 +21,32 @@ class PayplugGateway extends WC_Payment_Gateway {
 
 	private $permissions;
 
+	/**
+	 * @var \WC_Logger
+	 */
+	protected static $log;
+
+	/**
+	 * @var bool
+	 */
+	protected static $log_enabled;
+
+	/**
+	 * Logging method.
+	 *
+	 * @param string $message Log message.
+	 * @param string $level Optional. Default 'info'.
+	 *     emergency|alert|critical|error|warning|notice|info|debug
+	 */
+	public static function log( $message, $level = 'info' ) {
+		if ( self::$log_enabled ) {
+			if ( empty( self::$log ) ) {
+				self::$log = wc_get_logger();
+			}
+			self::$log->log( $level, $message, array( 'source' => 'payplug' ) );
+		}
+	}
+
 	public function __construct() {
 		$this->id                 = 'payplug';
 		$this->icon               = '';
@@ -42,6 +68,8 @@ class PayplugGateway extends WC_Payment_Gateway {
 		$this->email          = $this->get_option( 'email' );
 		$this->payment_method = $this->get_option( 'payment_method' );
 		$this->oneclick       = 'yes' === $this->get_option( 'oneclick', 'no' );
+
+		self::$log_enabled = $this->debug;
 
 		if ( 'test' === $this->mode ) {
 			$this->description .= ' ' . __( 'You are in TEST MODE. In test mode you can use the card 4242424242424242 with any valid expiration date and CVC.' );
