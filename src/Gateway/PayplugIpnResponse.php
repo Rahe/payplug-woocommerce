@@ -18,11 +18,11 @@ class PayplugIpnResponse {
 	}
 
 	public function handle_ipn_response() {
-		$input    = file_get_contents( 'php://input' );
+		$input = file_get_contents( 'php://input' );
 
 		try {
 			$resource = Notification::treat( $input );
-		} catch (UnknownAPIResourceException $e) {
+		} catch ( UnknownAPIResourceException $e ) {
 			PayplugGateway::log( sprintf( 'PayPlug IPN - Error while parsing IPN payload : %s', $e->getMessage() ), 'error' );
 			exit;
 		}
@@ -90,15 +90,12 @@ class PayplugIpnResponse {
 		}
 
 		if ( ! empty( $resource->failure ) ) {
-			$error = json_decode( $resource->failure );
-			if ( ! is_null( $error ) ) {
-				$order->update_status(
-					'failed',
-					sprintf( __( 'PayPlug IPN OK | Transaction #%s failed : %s', 'payplug' ), $resource->id, wc_clean( $error->message ) )
-				);
+			$order->update_status(
+				'failed',
+				sprintf( __( 'PayPlug IPN OK | Transaction #%s failed : %s', 'payplug' ), $resource->id, wc_clean( $resource->failure->message ) )
+			);
 
-				return;
-			}
+			return;
 		}
 	}
 
