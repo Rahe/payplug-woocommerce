@@ -84,6 +84,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 			$this->init_payplug();
 		}
 
+		add_action( 'wp_enqueue_scripts', [ $this, 'scripts' ] );
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'process_admin_options' ] );
 	}
 
@@ -209,6 +210,42 @@ class PayplugGateway extends WC_Payment_Gateway {
 
 		// Register IPN handler
 		new PayplugIpnResponse();
+	}
+
+	public function scripts() {
+		if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) && ! is_add_payment_method_page() && ! isset( $_GET['change_payment_method'] ) ) {
+			return;
+		}
+
+		// If PayPlug is not enabled bail.
+		if ( 'no' === $this->enabled ) {
+			return;
+		}
+
+		// If keys are not set bail.
+		if ( empty( $this->get_api_key( $this->mode ) ) ) {
+			PayplugGateway::log( 'Keys are not set correctly.' );
+
+			return;
+		}
+
+		if ( 'embedded' !== $this->payment_method ) {
+
+			return;
+		}
+
+		wp_register_script( 'payplug', 'https://api.payplug.com/js/1.0/form.js', [], '1.0', true );
+		wp_register_script( 'payplug-checkout', PAYPLUG_GATEWAY_PLUGIN_URL . 'assets/js/payplug-checkout.js', [
+			'jquery',
+			'payplug'
+		], PAYPLUG_GATEWAY_VERSION, true );
+		wp_localize_script( 'payplug-checkout', 'payplug_checkout_params', [
+			'ajax_url' => \WC_AJAX::get_endpoint( 'payplug_create_order' ),
+			'nonce'    => [
+				'checkout' => wp_create_nonce( 'woocommerce-process_checkout' ),
+			],
+		] );
+		wp_enqueue_script( 'payplug-checkout' );
 	}
 
 	/**
