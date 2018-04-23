@@ -233,6 +233,12 @@ class PayplugGateway extends WC_Payment_Gateway {
 		new PayplugIpnResponse();
 	}
 
+	/**
+	 * Embedded payment form scripts.
+	 *
+	 * Register scripts and additionnal data needed for the
+	 * embedded payment form.
+	 */
 	public function scripts() {
 		if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) && ! is_add_payment_method_page() && ! isset( $_GET['change_payment_method'] ) ) {
 			return;
@@ -339,6 +345,11 @@ class PayplugGateway extends WC_Payment_Gateway {
 		endif;
 	}
 
+	/**
+	 * Process admin options.
+	 *
+	 * @return bool
+	 */
 	public function process_admin_options() {
 		$data = $this->get_post_data();
 
@@ -356,7 +367,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 				apply_filters( 'woocommerce_settings_api_sanitized_fields_' . $this->id, $data ) );
 			\WC_Admin_Settings::add_message( __( 'Successfully logged out.', 'payplug' ) );
 
-			return;
+			return true;
 		}
 
 		// Handle login process
@@ -370,7 +381,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 			if ( is_wp_error( $response ) ) {
 				\WC_Admin_Settings::add_error( $response->get_error_message() );
 
-				return;
+				return false;
 			}
 
 			$fields = $this->get_form_fields();
@@ -407,7 +418,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 				apply_filters( 'woocommerce_settings_api_sanitized_fields_' . $this->id, $data ) );
 			\WC_Admin_Settings::add_message( __( 'Successfully logged in.', 'payplug' ) );
 
-			return;
+			return true;
 		}
 
 		// Don't let user without live key leave TEST mode.
@@ -423,6 +434,8 @@ class PayplugGateway extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Process payment.
+	 *
 	 * @param int $order_id
 	 *
 	 * @return array
