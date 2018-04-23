@@ -7,7 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-use function apply_filters;
 use Payplug\Authentication;
 use Payplug\Core\HttpClient;
 use Payplug\Exception\BadRequestException;
