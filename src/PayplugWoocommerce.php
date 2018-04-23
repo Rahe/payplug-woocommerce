@@ -22,6 +22,8 @@ class PayplugWoocommerce {
 	 */
 	public $notices;
 
+	public $requests;
+
 	/**
 	 * Get the singleton instance.
 	 *
@@ -63,6 +65,7 @@ class PayplugWoocommerce {
 		}
 
 		$this->notices = new Notices();
+		$this->requests = new PayplugWoocommerceRequest();
 
 		add_action( 'woocommerce_payment_gateways', [ $this, 'register_payplug_gateway' ] );
 		add_filter( 'plugin_action_links_' . PAYPLUG_GATEWAY_PLUGIN_BASENAME, [ $this, 'plugin_action_links' ] );
