@@ -74,27 +74,28 @@ class Metabox {
             <p><?php _e( 'No metadata available for the current order.', 'payplug' ); ?></p>
 		<?php else : ?>
             <ul>
-                <li><span><?php _e( 'PayPlug transaction ID', 'payplug' ); ?>
+                <li><span><?php _e( 'Transaction ID', 'payplug' ); ?>
                         :</span> <?php echo esc_html( $payplug_metadata['transaction_id'] ); ?></li>
                 <li><span><?php _e( 'Transaction state', 'payplug' ); ?>
-                        :</span> <?php true === $payplug_metadata['paid'] ? _e( 'Yes', 'payplug' ) : _e( 'No', 'payplug' ); ?>
+                        :</span> <?php true === $payplug_metadata['paid'] ? _e( 'Paid', 'payplug' ) : _e( 'Pending', 'payplug' ); ?>
                 </li>
                 <li><span><?php _e( 'Amount', 'payplug' ); ?>
-                        :</span> <?php echo esc_html( $payplug_metadata['amount'] ); ?></li>
+                        :</span> <?php echo wc_price( (int) $payplug_metadata['amount'] / 100 ); ?></li>
                 <li><span><?php _e( 'Paid at', 'payplug' ); ?>
-                        :</span> <?php echo esc_html( $payplug_metadata['paid_at'] ); ?></li>
-                <li><span><?php _e( 'Card', 'payplug' ); ?>
-                        :</span> <?php echo esc_html( $payplug_metadata['card_brand'] ); ?>
-                    ( <?php echo esc_html( $payplug_metadata['card_country'] ); ?> )
+                        :</span> <?php echo esc_html( date_i18n( sprintf( '%s %s', $date_format, $time_format ), $payplug_metadata['paid_at'] ) ); ?>
                 </li>
-                <li><span><?php _e( 'Card\'s last four digits', 'payplug' ); ?>
-                        :</span> <?php echo esc_html( $payplug_metadata['card_last4'] ); ?></li>
+                <li><span><?php _e( 'Card', 'payplug' ); ?>
+                        :</span> <?php echo esc_html( sprintf( '%s (%s)', $payplug_metadata['card_brand'], $payplug_metadata['card_country'] ) ); ?>
+                </li>
+                <li><span><?php _e( 'Last four digits', 'payplug' ); ?>
+                        :</span> <?php echo esc_html( sprintf( '**** **** **** %s', $payplug_metadata['card_last4'] ) ); ?>
+                </li>
                 <li><span><?php _e( '3-D Secure', 'payplug' ); ?>
                         :</span> <?php true === $payplug_metadata['3ds'] ? _e( 'Yes', 'payplug' ) : _e( 'No', 'payplug' ); ?>
                 </li>
                 <li><span><?php _e( 'Expiration date', 'payplug' ); ?>
-                        :</span> <?php echo esc_html( $payplug_metadata['card_exp_month'] ); ?>
-                    /<?php echo esc_html( $payplug_metadata['card_exp_year'] ); ?></li>
+                        :</span> <?php echo esc_html( sprintf( '%s/%s', zeroise( $payplug_metadata['card_exp_month'], 2 ), zeroise( $payplug_metadata['card_exp_year'], 2 ) ) ); ?>
+                </li>
                 <li><span><?php _e( 'Mode', 'payplug' ); ?>
                         :</span> <?php echo true === $payplug_metadata['live'] ? _e( 'Live', 'payplug' ) : _e( 'Test', 'payplug' ); ?>
                 </li>
