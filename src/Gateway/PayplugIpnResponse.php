@@ -10,8 +10,32 @@ if ( ! defined( 'ABSPATH' ) ) {
 use Payplug\Exception\UnknownAPIResourceException;
 use Payplug\Notification;
 use Payplug\PayplugWoocommerce\PayplugWoocommerceHelper;
+use Payplug\Resource\IVerifiableAPIResource;
 
 class PayplugIpnResponse {
+
+	/**
+	 * Extract useful metadata from PayPlug response.
+	 *
+	 * @param IVerifiableAPIResource $resource
+	 *
+	 * @return array
+	 */
+	public static function extract_transaction_metadata( $resource ) {
+		return [
+			'transaction_id' => sanitize_text_field( $resource->id ),
+			'paid' => (bool) $resource->is_paid,
+			'amount' => sanitize_text_field( $resource->amount ),
+			'3ds' => (bool) $resource->is_3ds,
+			'live' => (bool) $resource->is_live,
+			'paid_at' => sanitize_text_field( $resource->hosted_payment->paid_at ),
+			'card_last4' => sanitize_text_field( $resource->card->last4 ),
+			'card_exp_month' => sanitize_text_field( $resource->card->exp_month ),
+			'card_exp_year' => sanitize_text_field( $resource->card->exp_year ),
+			'card_brand' => sanitize_text_field( $resource->card->brand ),
+			'card_country' => sanitize_text_field( $resource->card->country ),
+		];
+	}
 
 	public function __construct() {
 		add_action( 'woocommerce_api_paypluggateway', [ $this, 'handle_ipn_response' ] );
@@ -51,7 +75,7 @@ class PayplugIpnResponse {
 	/**
 	 * Validate IPN notification.
 	 *
-	 * @param $resource
+	 * @param IVerifiableAPIResource $resource
 	 *
 	 * @return bool
 	 */
@@ -79,6 +103,9 @@ class PayplugIpnResponse {
 		}
 
 		if ( $resource->is_paid ) {
+			$payplug_metadata = self::extract_transaction_metadata( $resource );
+			update_post_meta( $order_id, '_payplug_metadata', $payplug_metadata );
+
 			PayplugWoocommerceHelper::is_pre_30() ? update_post_meta( $order_id, '_transaction_id', $resource->id ) : $order->set_transaction_id( $resource->id );
 			$order->add_order_note( sprintf( __( 'PayPlug IPN OK | Transaction #%s', 'payplug' ), $resource->id ) );
 			$order->payment_complete( $resource->id );
