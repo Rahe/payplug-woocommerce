@@ -67,7 +67,9 @@ class Metabox {
 		}
 
 		$order_id         = PayplugWoocommerceHelper::is_pre_30() ? $order->id : $order->get_id();
-		$payplug_metadata = get_post_meta( $order_id, '_payplug_metadata' );
+		$payplug_metadata = get_post_meta( $order_id, '_payplug_metadata', true );
+		$date_format      = get_option( 'date_format', 'j F Y' );
+		$time_format      = get_option( 'time_format', 'G \h i \m\i\n' );
 		if ( empty( $payplug_metadata ) ) : ?>
             <p><?php _e( 'No metadata available for the current order.', 'payplug' ); ?></p>
 		<?php else : ?>
