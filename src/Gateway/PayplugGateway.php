@@ -437,8 +437,9 @@ class PayplugGateway extends WC_Payment_Gateway {
 			throw new \Exception( $amount->get_error_message() );
 		}
 
-		$domain = rtrim( home_url(), '/' );
-		$domain = str_replace( is_ssl() ? 'https://' : 'http://', '', $domain );
+		if ( empty( $domain = parse_url( home_url(), PHP_URL_HOST ) ) ) {
+			$domain = '';
+		}
 
 		try {
 			$payment = Payment::create( [
