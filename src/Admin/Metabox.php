@@ -74,20 +74,20 @@ class Metabox {
             <p><?php _e( 'No metadata available for the current order.', 'payplug' ); ?></p>
 		<?php else : ?>
             <ul>
-                <li><span><?php _e( 'Transaction ID', 'payplug' ); ?>
+                <li><span><?php _e( 'PayPlug Payment ID', 'payplug' ); ?>
                         :</span> <?php echo esc_html( $payplug_metadata['transaction_id'] ); ?></li>
-                <li><span><?php _e( 'Transaction state', 'payplug' ); ?>
-                        :</span> <?php true === $payplug_metadata['paid'] ? _e( 'Paid', 'payplug' ) : _e( 'Pending', 'payplug' ); ?>
+                <li><span><?php _e( 'Status', 'payplug' ); ?>
+                        :</span> <?php true === $payplug_metadata['paid'] ? _e( 'Paid', 'payplug' ) : _e( 'Not Paid', 'payplug' ); ?>
                 </li>
                 <li><span><?php _e( 'Amount', 'payplug' ); ?>
                         :</span> <?php echo wc_price( (int) $payplug_metadata['amount'] / 100 ); ?></li>
                 <li><span><?php _e( 'Paid at', 'payplug' ); ?>
                         :</span> <?php echo esc_html( date_i18n( sprintf( '%s %s', $date_format, $time_format ), $payplug_metadata['paid_at'] ) ); ?>
                 </li>
-                <li><span><?php _e( 'Card', 'payplug' ); ?>
+                <li><span><?php _e( 'Credit card', 'payplug' ); ?>
                         :</span> <?php echo esc_html( sprintf( '%s (%s)', $payplug_metadata['card_brand'], $payplug_metadata['card_country'] ) ); ?>
                 </li>
-                <li><span><?php _e( 'Last four digits', 'payplug' ); ?>
+                <li><span><?php _e( 'Card mask', 'payplug' ); ?>
                         :</span> <?php echo esc_html( sprintf( '**** **** **** %s', $payplug_metadata['card_last4'] ) ); ?>
                 </li>
                 <li><span><?php _e( '3-D Secure', 'payplug' ); ?>
