@@ -7,6 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use function apply_filters;
 use Payplug\Authentication;
 use Payplug\Core\HttpClient;
 use Payplug\Exception\BadRequestException;
@@ -86,6 +87,27 @@ class PayplugGateway extends WC_Payment_Gateway {
 
 		add_action( 'wp_enqueue_scripts', [ $this, 'scripts' ] );
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'process_admin_options' ] );
+	}
+
+	/**
+	 * Get payment icons.
+	 *
+	 * @return string
+	 */
+	public function get_icon() {
+		$icons = apply_filters( 'payplug_payment_icons', [
+			'visa'       => '<img src="' . WC()->plugin_url() . '/assets/images/icons/credit-cards/visa.svg" class="stripe-visa-icon stripe-icon" alt="Visa" />',
+			'amex'       => '<img src="' . WC()->plugin_url() . '/assets/images/icons/credit-cards/amex.svg" class="stripe-amex-icon stripe-icon" alt="American Express" />',
+			'mastercard' => '<img src="' . WC()->plugin_url() . '/assets/images/icons/credit-cards/mastercard.svg" class="stripe-mastercard-icon stripe-icon" alt="Mastercard" />',
+			'jcb'        => '<img src="' . WC()->plugin_url() . '/assets/images/icons/credit-cards/jcb.svg" class="stripe-jcb-icon stripe-icon" alt="JCB" />',
+		] );
+
+		$icons_str = '';
+		foreach ( $icons as $icon ) {
+			$icons_str .= $icon;
+		}
+
+		return $icons_str;
 	}
 
 	/**
