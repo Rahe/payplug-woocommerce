@@ -261,7 +261,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 			return;
 		}
 
-		wp_register_script( 'payplug', 'https://api.payplug.com/js/1.0/form.js', [], '1.0', true );
+		wp_register_script( 'payplug', 'https://api.payplug.com/js/1.2/form.js', [], '1.2', true );
 		wp_register_script( 'payplug-checkout', PAYPLUG_GATEWAY_PLUGIN_URL . 'assets/js/payplug-checkout.js', [
 			'jquery',
 			'payplug'
