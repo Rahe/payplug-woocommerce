@@ -446,6 +446,13 @@ class PayplugGateway extends WC_Payment_Gateway {
 			\WC_Admin_Settings::add_error( __( 'Your account does not currently support LIVE mode, it need to be approved first. If your account has already been approved, please log out and log back in.', 'payplug' ) );
 		}
 
+		// Check user permissions before activating one-click feature.
+		$oneclick_fieldkey = $this->get_field_key( 'oneclick' );
+		if ( '1' === $data[ $oneclick_fieldkey ] && false === $this->permissions->has_permissions( PayplugPermissions::SAVE_CARD ) ) {
+			$data[ $oneclick_fieldkey ] = '0';
+			\WC_Admin_Settings::add_error( __( 'Only Premium accounts can use one click in LIVE mode.', 'payplug' ) );
+		}
+
 		parent::process_admin_options();
 	}
 
