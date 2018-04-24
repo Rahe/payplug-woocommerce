@@ -47,7 +47,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 			if ( empty( self::$log ) ) {
 				self::$log = wc_get_logger();
 			}
-			self::$log->log( $level, $message, array( 'source' => 'payplug' ) );
+			self::$log->log( $level, $message, array( 'source' => 'payplug_gateway' ) );
 		}
 	}
 
@@ -440,11 +440,15 @@ class PayplugGateway extends WC_Payment_Gateway {
 	 * @throws \Exception
 	 */
 	public function process_payment( $order_id ) {
+
+		PayplugGateway::log( sprintf( 'Processing payment for order #%s', $order_id ) );
+
 		$order       = wc_get_order( $order_id );
 		$customer_id = PayplugWoocommerceHelper::is_pre_30() ? $order->customer_user : $order->get_customer_id();
 		$amount      = (int) number_format( $order->get_total(), 2, '.', '' ) * 100;
 		$amount      = $this->validate_order_amount( $amount );
 		if ( is_wp_error( $amount ) ) {
+			PayplugGateway::log( sprintf( 'Invalid amount %s for the order.', $amount ), 'error' );
 			throw new \Exception( $amount->get_error_message() );
 		}
 
@@ -497,7 +501,8 @@ class PayplugGateway extends WC_Payment_Gateway {
 
 			$redirect_url = $payment->hosted_payment->payment_url;
 			$cancel_url   = $payment->hosted_payment->cancel_url;
-		} catch ( ConfigurationNotSetException $e ) {
+		} catch ( \Exception $e ) {
+			PayplugGateway::log( sprintf( 'Error while processing order #%s : %s', $order_id, wc_print_r( $e->getErrorObject() ) ), 'error' );
 			$redirect_url = false;
 			$cancel_url   = false;
 		}
