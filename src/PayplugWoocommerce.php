@@ -6,6 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use Payplug\PayplugWoocommerce\Admin\Metabox;
 use Payplug\PayplugWoocommerce\Admin\Notices;
 
 class PayplugWoocommerce {
@@ -21,6 +22,10 @@ class PayplugWoocommerce {
 	 * @var Notices
 	 */
 	public $notices;
+
+	public $metabox;
+
+	public $requests;
 
 	/**
 	 * Get the singleton instance.
@@ -63,6 +68,8 @@ class PayplugWoocommerce {
 		}
 
 		$this->notices = new Notices();
+		$this->metabox = new Metabox();
+		$this->requests = new PayplugWoocommerceRequest();
 
 		add_action( 'woocommerce_payment_gateways', [ $this, 'register_payplug_gateway' ] );
 		add_filter( 'plugin_action_links_' . PAYPLUG_GATEWAY_PLUGIN_BASENAME, [ $this, 'plugin_action_links' ] );

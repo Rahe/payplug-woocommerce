@@ -8,8 +8,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 use Payplug\Authentication;
+use Payplug\Core\HttpClient;
 use Payplug\Exception\BadRequestException;
+use Payplug\Exception\ConfigurationNotSetException;
+use Payplug\Payment;
 use Payplug\Payplug;
+use Payplug\PayplugWoocommerce\PayplugWoocommerceHelper;
 use WC_Payment_Gateway;
 
 /**
@@ -20,6 +24,32 @@ use WC_Payment_Gateway;
 class PayplugGateway extends WC_Payment_Gateway {
 
 	private $permissions;
+
+	/**
+	 * @var \WC_Logger
+	 */
+	protected static $log;
+
+	/**
+	 * @var bool
+	 */
+	protected static $log_enabled;
+
+	/**
+	 * Logging method.
+	 *
+	 * @param string $message Log message.
+	 * @param string $level Optional. Default 'info'.
+	 *     emergency|alert|critical|error|warning|notice|info|debug
+	 */
+	public static function log( $message, $level = 'info' ) {
+		if ( self::$log_enabled ) {
+			if ( empty( self::$log ) ) {
+				self::$log = wc_get_logger();
+			}
+			self::$log->log( $level, $message, array( 'source' => 'payplug_gateway' ) );
+		}
+	}
 
 	public function __construct() {
 		$this->id                 = 'payplug';
@@ -43,12 +73,38 @@ class PayplugGateway extends WC_Payment_Gateway {
 		$this->payment_method = $this->get_option( 'payment_method' );
 		$this->oneclick       = 'yes' === $this->get_option( 'oneclick', 'no' );
 
+		self::$log_enabled = $this->debug;
+
 		if ( 'test' === $this->mode ) {
-			$this->description .= ' ' . __( 'You are in TEST MODE. In test mode you can use the card 4242424242424242 with any valid expiration date and CVC.' );
+			$this->description .= ' ' . __( 'You are in TEST MODE. In test mode you can use the card 4242424242424242 with any valid expiration date and CVC.', 'payplug' );
 			$this->description = trim( $this->description );
 		}
 
+		if ( $this->enabled ) {
+			$this->init_payplug();
+		}
+
+		add_action( 'wp_enqueue_scripts', [ $this, 'scripts' ] );
 		add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, [ $this, 'process_admin_options' ] );
+	}
+
+	/**
+	 * Get payment icons.
+	 *
+	 * @return string
+	 */
+	public function get_icon() {
+		$icons = apply_filters( 'payplug_payment_icons', [
+			'visa'       => '<img src="' . WC()->plugin_url() . '/assets/images/icons/credit-cards/visa.svg" class="stripe-visa-icon stripe-icon" alt="Visa" />',
+			'mastercard' => '<img src="' . WC()->plugin_url() . '/assets/images/icons/credit-cards/mastercard.svg" class="stripe-mastercard-icon stripe-icon" alt="Mastercard" />',
+		] );
+
+		$icons_str = '';
+		foreach ( $icons as $icon ) {
+			$icons_str .= $icon;
+		}
+
+		return $icons_str;
 	}
 
 	/**
@@ -158,6 +214,66 @@ class PayplugGateway extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Set global configuration for PayPlug instance.
+	 */
+	public function init_payplug() {
+		$current_mode = $this->get_current_mode();
+		$key          = $this->get_api_key( $current_mode );
+
+		Payplug::setSecretKey( $key );
+		HttpClient::addDefaultUserAgentProduct(
+			'PayPlug-WooCommerce',
+			PAYPLUG_GATEWAY_VERSION,
+			sprintf( 'WooCommerce/%s', WC()->version )
+		);
+
+		// Register IPN handler
+		new PayplugIpnResponse();
+	}
+
+	/**
+	 * Embedded payment form scripts.
+	 *
+	 * Register scripts and additionnal data needed for the
+	 * embedded payment form.
+	 */
+	public function scripts() {
+		if ( ! is_cart() && ! is_checkout() && ! isset( $_GET['pay_for_order'] ) && ! is_add_payment_method_page() && ! isset( $_GET['change_payment_method'] ) ) {
+			return;
+		}
+
+		// If PayPlug is not enabled bail.
+		if ( 'no' === $this->enabled ) {
+			return;
+		}
+
+		// If keys are not set bail.
+		if ( empty( $this->get_api_key( $this->mode ) ) ) {
+			PayplugGateway::log( 'Keys are not set correctly.' );
+
+			return;
+		}
+
+		if ( 'embedded' !== $this->payment_method ) {
+
+			return;
+		}
+
+		wp_register_script( 'payplug', 'https://api.payplug.com/js/1.2/form.js', [], '1.2', true );
+		wp_register_script( 'payplug-checkout', PAYPLUG_GATEWAY_PLUGIN_URL . 'assets/js/payplug-checkout.js', [
+			'jquery',
+			'payplug'
+		], PAYPLUG_GATEWAY_VERSION, true );
+		wp_localize_script( 'payplug-checkout', 'payplug_checkout_params', [
+			'ajax_url' => \WC_AJAX::get_endpoint( 'payplug_create_order' ),
+			'nonce'    => [
+				'checkout' => wp_create_nonce( 'woocommerce-process_checkout' ),
+			],
+		] );
+		wp_enqueue_script( 'payplug-checkout' );
+	}
+
+	/**
 	 * Handle admin display.
 	 */
 	public function admin_options() {
@@ -227,6 +343,11 @@ class PayplugGateway extends WC_Payment_Gateway {
 		endif;
 	}
 
+	/**
+	 * Process admin options.
+	 *
+	 * @return bool
+	 */
 	public function process_admin_options() {
 		$data = $this->get_post_data();
 
@@ -244,7 +365,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 				apply_filters( 'woocommerce_settings_api_sanitized_fields_' . $this->id, $data ) );
 			\WC_Admin_Settings::add_message( __( 'Successfully logged out.', 'payplug' ) );
 
-			return;
+			return true;
 		}
 
 		// Handle login process
@@ -258,7 +379,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 			if ( is_wp_error( $response ) ) {
 				\WC_Admin_Settings::add_error( $response->get_error_message() );
 
-				return;
+				return false;
 			}
 
 			$fields = $this->get_form_fields();
@@ -295,7 +416,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 				apply_filters( 'woocommerce_settings_api_sanitized_fields_' . $this->id, $data ) );
 			\WC_Admin_Settings::add_message( __( 'Successfully logged in.', 'payplug' ) );
 
-			return;
+			return true;
 		}
 
 		// Don't let user without live key leave TEST mode.
@@ -310,24 +431,131 @@ class PayplugGateway extends WC_Payment_Gateway {
 		parent::process_admin_options();
 	}
 
+	/**
+	 * Process payment.
+	 *
+	 * @param int $order_id
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
 	public function process_payment( $order_id ) {
-		return parent::process_payment( $order_id ); // TODO: Change the autogenerated stub
+
+		PayplugGateway::log( sprintf( 'Processing payment for order #%s', $order_id ) );
+
+		$order       = wc_get_order( $order_id );
+		$customer_id = PayplugWoocommerceHelper::is_pre_30() ? $order->customer_user : $order->get_customer_id();
+		$amount      = (int) number_format( $order->get_total(), 2, '.', '' ) * 100;
+		$amount      = $this->validate_order_amount( $amount );
+		if ( is_wp_error( $amount ) ) {
+			PayplugGateway::log( sprintf( 'Invalid amount %s for the order.', $amount ), 'error' );
+			throw new \Exception( $amount->get_error_message() );
+		}
+
+
+		$customer_details = [
+			'first_name' => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_first_name : $order->get_billing_first_name(),
+			'last_name'  => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_last_name : $order->get_billing_last_name(),
+			'email'      => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_email : $order->get_billing_email(),
+			'address1'   => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_address_1 : $order->get_billing_address_1(),
+			'address2'   => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_address_2 : $order->get_billing_address_2(),
+			'postcode'   => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_postcode : $order->get_billing_postcode(),
+			'city'       => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_city : $order->get_billing_city(),
+			'country'    => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_country : $order->get_billing_country(),
+		];
+
+		try {
+			$payment_data = [
+				'amount'           => $amount,
+				'currency'         => get_woocommerce_currency(),
+				'customer'         => [
+					'first_name' => $this->limit_length( $customer_details['first_name'] ),
+					'last_name'  => $this->limit_length( $customer_details['last_name'] ),
+					'email'      => $this->limit_length( $customer_details['email'], 255 ),
+					'address1'   => $this->limit_length( $customer_details['address1'], 255 ),
+					'postcode'   => $this->limit_length( $customer_details['postcode'], 16 ),
+					'city'       => $this->limit_length( $customer_details['city'] ),
+					'country'    => $this->limit_length( $customer_details['country'], 2 ),
+				],
+				'hosted_payment'   => [
+					'return_url' => esc_url_raw( $order->get_checkout_order_received_url() ),
+					'cancel_url' => esc_url_raw( $order->get_cancel_order_url_raw() ),
+				],
+				'notification_url' => esc_url_raw( WC()->api_request_url( 'PayplugGateway' ) ),
+				'metadata'         => [
+					'order_id'    => $order_id,
+					'customer_id' => ( (int) $customer_id > 0 ) ? $customer_id : 'guest',
+					'domain'      => $this->limit_length( esc_url_raw( home_url() ), 500 ),
+				]
+			];
+
+			if ( ! empty( $customer_details['address2'] ) ) {
+				$payment_data['customer']['address2'] = $this->limit_length( $customer_details['address2'], 255 );
+			}
+
+			// Don't send country code if it's not supported by PayPlug API
+			if ( ! in_array( strtolower( $payment_data['customer']['country'] ), PayplugWoocommerceHelper::get_supported_countries() ) ) {
+				unset( $payment_data['customer']['country'] );
+			}
+
+			/**
+			 * Filter the payment data before it's used
+			 *
+			 * @param array $payment_data
+			 */
+			$payment_data = apply_filters( 'payplug_gateway_payment_data', $payment_data, $order_id );
+			$payment      = Payment::create( $payment_data );
+
+			$redirect_url = $payment->hosted_payment->payment_url;
+			$cancel_url   = $payment->hosted_payment->cancel_url;
+		} catch ( \Exception $e ) {
+			PayplugGateway::log( sprintf( 'Error while processing order #%s : %s', $order_id, wc_print_r( $e->getErrorObject() ) ), 'error' );
+			$redirect_url = false;
+			$cancel_url   = false;
+		}
+
+		return [
+			'result'   => 'success',
+			'redirect' => $redirect_url,
+			'cancel'   => $cancel_url,
+		];
+	}
+
+	/**
+	 * Check the order amount to ensure it's on the allowed range.
+	 *
+	 * @param int $amount
+	 *
+	 * @return int|\WP_Error
+	 */
+	public function validate_order_amount( $amount ) {
+		if (
+			$amount < PayplugWoocommerceHelper::get_minimum_amount()
+			|| $amount > PayplugWoocommerceHelper::get_maximum_amount()
+		) {
+			return new \WP_Error(
+				'invalid order amount',
+				sprintf( __( 'Total amount of %s is not in the allowed range.', 'payplug' ), ( $amount / 100 ) )
+			);
+		}
+
+		return $amount;
+	}
+
+	/**
+	 * Limit string length.
+	 *
+	 * @param string $value
+	 * @param int $maxlength
+	 *
+	 * @return string
+	 */
+	public function limit_length( $value, $maxlength = 100 ) {
+		return ( strlen( $value ) > $maxlength ) ? substr( $value, 0, $maxlength ) : $value;
 	}
 
 	public function process_refund( $order_id, $amount = null, $reason = '' ) {
 		return parent::process_refund( $order_id, $amount, $reason ); // TODO: Change the autogenerated stub
-	}
-
-	/**
-	 * Get a Payplug API instance
-	 *
-	 * @return Payplug
-	 */
-	public function get_payplug() {
-		$current_mode = $this->get_current_mode();
-		$key          = $this->get_api_key( $current_mode );
-
-		return new Payplug( $key );
 	}
 
 	/**
@@ -421,10 +649,12 @@ class PayplugGateway extends WC_Payment_Gateway {
 		ob_start();
 		?>
 		<tr valign="top">
-			<th scope="row" class="titledesc">
-				<?php echo $this->get_tooltip_html( $data ); ?>
-				<label for="<?php echo esc_attr( $field_key ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></label>
-			</th>
+			<?php if ( ! $data['hide_label'] ) : ?>
+				<th scope="row" class="titledesc">
+					<?php echo $this->get_tooltip_html( $data ); ?>
+					<label for="<?php echo esc_attr( $field_key ); ?>"><?php echo wp_kses_post( $data['title'] ); ?></label>
+				</th>
+			<?php endif; ?>
 			<td class="forminp">
 				<fieldset>
 					<legend class="screen-reader-text"><span><?php echo wp_kses_post( $data['title'] ); ?></span>
@@ -538,7 +768,8 @@ class PayplugGateway extends WC_Payment_Gateway {
 					<input type="submit" name="submit_logout" value="<?php _e( 'Logout', 'payplug' ); ?>">
 					<?php wp_nonce_field( 'payplug_user_logout', '_logoutaction' ); ?>
 					|
-					<a href="https://portal.payplug.com"><?php _e( 'Go to my dashboard', 'payplug' ); ?></a>
+					<a href="https://portal.payplug.com"
+					   target="_blank"><?php _e( 'Go to my dashboard', 'payplug' ); ?></a>
 				</p>
 			</td>
 		</tr>

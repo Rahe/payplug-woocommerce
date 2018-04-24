@@ -5,24 +5,27 @@ msgstr ""
 "Project-Id-Version: Payplug 0.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/payplug\n"
 "POT-Creation-Date: 2018-04-23 20:29:26+00:00\n"
+"PO-Revision-Date: 2018-04-23 22:34+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: Poedit 2.0.7\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: src/Admin/Metabox.php:51
 msgid "PayPlug payment details"
-msgstr ""
+msgstr "Détails du paiement PayPlug"
 
 #: src/Admin/Metabox.php:74
 msgid "No metadata available for the current order."
-msgstr ""
+msgstr "Aucunes informations disponible pour la commande."
 
 #: src/Admin/Metabox.php:77
 msgid "PayPlug Payment ID"
-msgstr ""
+msgstr "PayPlug ID"
 
 #: src/Admin/Metabox.php:79
 msgid "Status"
@@ -30,27 +33,27 @@ msgstr ""
 
 #: src/Admin/Metabox.php:80
 msgid "Paid"
-msgstr ""
+msgstr "Payé"
 
 #: src/Admin/Metabox.php:80
 msgid "Not Paid"
-msgstr ""
+msgstr "Non payé"
 
 #: src/Admin/Metabox.php:82
 msgid "Amount"
-msgstr ""
+msgstr "Montant"
 
 #: src/Admin/Metabox.php:84
 msgid "Paid at"
-msgstr ""
+msgstr "Payé le"
 
 #: src/Admin/Metabox.php:87
 msgid "Credit card"
-msgstr ""
+msgstr "Carte de paiement"
 
 #: src/Admin/Metabox.php:90
 msgid "Card mask"
-msgstr ""
+msgstr "Les 4 derniers chiffres de la carte"
 
 #: src/Admin/Metabox.php:93
 msgid "3-D Secure"
@@ -58,15 +61,15 @@ msgstr ""
 
 #: src/Admin/Metabox.php:94
 msgid "Yes"
-msgstr ""
+msgstr "Oui"
 
 #: src/Admin/Metabox.php:94
 msgid "No"
-msgstr ""
+msgstr "Non"
 
 #: src/Admin/Metabox.php:96
 msgid "Expiration date"
-msgstr ""
+msgstr "Date d'expiration"
 
 #: src/Admin/Metabox.php:99 src/Gateway/PayplugGateway.php:167
 msgid "Mode"
@@ -82,11 +85,11 @@ msgstr ""
 
 #: src/Admin/Notices.php:123 src/Gateway/PayplugGateway.php:338
 msgid "Login"
-msgstr ""
+msgstr "Connectez-vous"
 
 #: src/Admin/Notices.php:133
 msgid "PayPlug is in TEST mode"
-msgstr ""
+msgstr "PayPlug est en mode TEST"
 
 #: src/Admin/Notices.php:134
 msgid ""
@@ -99,6 +102,8 @@ msgid ""
 "PayPlug is in TEST mode. All payments are fictitious and will not generate "
 "real transactions."
 msgstr ""
+"PayPlug est en mode TEST. Tous les paiements sont des simulations et ne "
+"généreront aucune transaction réelles."
 
 #: src/Gateway/PayplugGateway.php:58
 msgctxt "Gateway method title"
@@ -117,19 +122,21 @@ msgstr ""
 
 #: src/Gateway/PayplugGateway.php:126
 msgid "Enable/Disable"
-msgstr ""
+msgstr "Activer/Désactiver"
 
 #: src/Gateway/PayplugGateway.php:128
 msgid "Enable PayPlug"
-msgstr ""
+msgstr "Activer PayPlug"
 
 #: src/Gateway/PayplugGateway.php:129
 msgid "This gateway can only be enable for shop using euro has currency."
 msgstr ""
+"Ce pont de paiement n'est disponible que pour les boutiques qui utilisent "
+"l'Euro comme monnaie."
 
 #: src/Gateway/PayplugGateway.php:133
 msgid "Title"
-msgstr ""
+msgstr "Titre"
 
 #: src/Gateway/PayplugGateway.php:135
 msgid "This controls the title which the user sees during checkout."
@@ -149,7 +156,7 @@ msgstr ""
 
 #: src/Gateway/PayplugGateway.php:144
 msgid "Pay via PayPlug."
-msgstr ""
+msgstr "Payer via PayPlug."
 
 #: src/Gateway/PayplugGateway.php:147 src/Gateway/PayplugGateway.php:308
 msgid "Connexion"
@@ -161,23 +168,23 @@ msgstr ""
 
 #: src/Gateway/PayplugGateway.php:181 src/PayplugWoocommerce.php:99
 msgid "Settings"
-msgstr ""
+msgstr "Réglages"
 
 #: src/Gateway/PayplugGateway.php:185
 msgid "Payment method"
-msgstr ""
+msgstr "Méthode de paiement"
 
 #: src/Gateway/PayplugGateway.php:187 src/Gateway/PayplugGateway.php:211
 msgid "Choose which payment method will be used."
-msgstr ""
+msgstr "Choisissez la méthode de paiement qui sera utilisée."
 
 #: src/Gateway/PayplugGateway.php:191
 msgid "Redirect"
-msgstr ""
+msgstr "Page redirigée"
 
 #: src/Gateway/PayplugGateway.php:192
 msgid "Embedded"
-msgstr ""
+msgstr "Lightbox"
 
 #: src/Gateway/PayplugGateway.php:196
 msgid "Debug"
@@ -185,11 +192,11 @@ msgstr ""
 
 #: src/Gateway/PayplugGateway.php:198
 msgid "Enable Debug Mode"
-msgstr ""
+msgstr "Activer le mode debug"
 
 #: src/Gateway/PayplugGateway.php:202
 msgid "Advanced Settings"
-msgstr ""
+msgstr "Réglages avancés"
 
 #: src/Gateway/PayplugGateway.php:203
 msgid ""
@@ -198,31 +205,31 @@ msgstr ""
 
 #: src/Gateway/PayplugGateway.php:208
 msgid "One Click Payment"
-msgstr ""
+msgstr "Paiement en un clic"
 
 #: src/Gateway/PayplugGateway.php:210
 msgid "Activate"
-msgstr ""
+msgstr "Activer"
 
 #: src/Gateway/PayplugGateway.php:313 src/Gateway/PayplugGateway.php:317
 msgid "Email"
-msgstr ""
+msgstr "Adresse mail"
 
 #: src/Gateway/PayplugGateway.php:319
 msgid "your@email.com"
-msgstr ""
+msgstr "votre@email.com"
 
 #: src/Gateway/PayplugGateway.php:325 src/Gateway/PayplugGateway.php:329
 msgid "Password"
-msgstr ""
+msgstr "Mot de passe"
 
 #: src/Gateway/PayplugGateway.php:368
 msgid "Successfully logged out."
-msgstr ""
+msgstr "Vous avez été déconnecté."
 
 #: src/Gateway/PayplugGateway.php:419
 msgid "Successfully logged in."
-msgstr ""
+msgstr "Vous êtes connecté."
 
 #: src/Gateway/PayplugGateway.php:430
 msgid ""
@@ -237,19 +244,19 @@ msgstr ""
 
 #: src/Gateway/PayplugGateway.php:537
 msgid "Please fill all login fields"
-msgstr ""
+msgstr "Merci de remplir tous les champs de connexion"
 
 #: src/Gateway/PayplugGateway.php:543 src/Gateway/PayplugGateway.php:548
 msgid "Your credentials are invalid."
-msgstr ""
+msgstr "Vos identifiants sont invalide."
 
 #: src/Gateway/PayplugGateway.php:734
 msgid "Logout"
-msgstr ""
+msgstr "Déconnexion"
 
 #: src/Gateway/PayplugGateway.php:738
 msgid "Go to my dashboard"
-msgstr ""
+msgstr "Voir mon tableau de bord"
 
 #: src/Gateway/PayplugGatewayRequirements.php:39
 msgid "PHP cURL extension is enabled on your server."
@@ -293,11 +300,11 @@ msgstr ""
 
 #: src/PayplugWoocommerce.php:63
 msgid "PayPlug require WooCommerce to be activated to work."
-msgstr ""
+msgstr "PayPlug nécessite que WooCommerce soit installé pour fonctionner."
 
 #: src/PayplugWoocommerceRequest.php:66
 msgid "Empty cart"
-msgstr ""
+msgstr "Votre panier est vide"
 
 #. Plugin Name of the plugin/theme
 msgid "Payplug"
@@ -318,3 +325,12 @@ msgstr ""
 #. Author URI of the plugin/theme
 msgid "YOUR SITE HERE"
 msgstr ""
+
+#~ msgid "The PHP Curl extention is installed and available."
+#~ msgstr "L'extension PHP Curl est installée et disponible."
+
+#~ msgid "The PHP Curl extention was not found."
+#~ msgstr "L'extension PHP Curl n'est pas disponible."
+
+#~ msgid "Your PHP version is up-to-date."
+#~ msgstr "La version PHP de votre serveur est à jour."
