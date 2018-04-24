@@ -58,8 +58,7 @@
 				return;
 			}
 
-			// Prevent submit and stop all other listeners
-			// from being triggered.
+			//Prevent submit and stop all other listeners from being triggered.
 			e.preventDefault();
 			e.stopImmediatePropagation();
 
