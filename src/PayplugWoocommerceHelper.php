@@ -15,6 +15,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 class PayplugWoocommerceHelper {
 
 	/**
+	 * Check if current WooCommerce version is below 3.0.0
+	 *
 	 * @return bool
 	 */
 	public static function is_pre_30() {
@@ -24,6 +26,8 @@ class PayplugWoocommerceHelper {
 	}
 
 	/**
+	 * Get a URL to the PayPlug gateway settings page.
+	 *
 	 * @return string
 	 */
 	public static function get_setting_link() {
