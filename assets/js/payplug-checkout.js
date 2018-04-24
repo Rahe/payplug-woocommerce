@@ -36,16 +36,16 @@
 	var payplug_checkout = {
 		init: function () {
 			if ($('form.woocommerce-checkout').length) {
-				this.form = $('form.woocommerce-checkout');
-				this.form.on(
+				this.$form = $('form.woocommerce-checkout');
+				this.$form.on(
 					'submit',
 					this.onSubmit
 				)
 			}
 
 			if ($('form#order_review').length) {
-				this.form = $('form#order_review');
-				this.form.on(
+				this.$form = $('form#order_review');
+				this.$form.on(
 					'submit',
 					this.onSubmit
 				)
@@ -65,7 +65,7 @@
 
 			$.post(
 				payplug_checkout_params.ajax_url,
-				payplug_checkout.form.serialize()
+				payplug_checkout.$form.serialize()
 			).done(payplug_checkout.openModal);
 		},
 		openModal: function (response) {
