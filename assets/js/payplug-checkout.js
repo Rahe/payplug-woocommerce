@@ -29,7 +29,7 @@
 				node.parentNode.removeChild(node);
 			}
 
-			$(document).trigger('payplugClosedIframe');
+			$(document).trigger('payplugIframeClosed');
 		}
 	}
 
@@ -51,7 +51,7 @@
 				)
 			}
 
-			$(document).on('payplugClosedIframe', this.handleClosedIframe);
+			$(document).on('payplugIframeClosed', this.handleClosedIframe);
 		},
 		onSubmit: function (e) {
 			if (!payplug_checkout.isPayplugChosen()) {
