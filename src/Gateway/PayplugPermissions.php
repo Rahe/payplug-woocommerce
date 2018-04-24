@@ -12,6 +12,7 @@ use Payplug\Exception\ConfigurationNotSetException;
 
 class PayplugPermissions {
 
+	const OPTION_NAME = 'payplug_permission';
 	const LIVE_MODE = 'use_live_mode';
 	const SAVE_CARD = 'can_save_cards';
 
@@ -19,6 +20,13 @@ class PayplugPermissions {
 	 * @var PayplugGateway
 	 */
 	private $gateway;
+
+	/**
+	 * The current mode for the gateway.
+	 *
+	 * @var string
+	 */
+	private $gateway_mode;
 
 	/**
 	 * @var array
@@ -31,7 +39,8 @@ class PayplugPermissions {
 	 * @param PayplugGateway $gateway
 	 */
 	public function __construct( PayplugGateway $gateway ) {
-		$this->gateway = $gateway;
+		$this->gateway      = $gateway;
+		$this->gateway_mode = $gateway->get_current_mode();
 		$this->load_permissions();
 	}
 
@@ -60,14 +69,45 @@ class PayplugPermissions {
 	}
 
 	/**
+	 * Delete permissions for the current mode.
+	 *
+	 * @return bool
+	 */
+	public function clear_permissions() {
+		return delete_transient( $this->get_key() );
+	}
+
+	/**
 	 * Load permissions for the current mode.
 	 */
 	protected function load_permissions() {
+
+		$payplug_permissions = get_transient( $this->get_key() );
+		if ( ! empty( $payplug_permissions ) ) {
+			$this->permissions = $payplug_permissions;
+
+			return true;
+		}
+
 		try {
 			$response          = Authentication::getPermissions();
 			$this->permissions = ! empty( $response ) ? $response : [];
+			set_transient( $this->get_key(), $this->permissions, DAY_IN_SECONDS );
+
+			return true;
 		} catch ( ConfigurationNotSetException $e ) {
 			$this->permissions = [];
 		}
+
+		return false;
+	}
+
+	/**
+	 * Build the key to retrieve the permissions.
+	 *
+	 * @return string
+	 */
+	protected function get_key() {
+		return self::OPTION_NAME . '_' . $this->gateway_mode;
 	}
 }
