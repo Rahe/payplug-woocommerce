@@ -452,7 +452,8 @@ class PayplugGateway extends WC_Payment_Gateway {
 			throw new \Exception( $amount->get_error_message() );
 		}
 
-		$customer_details = apply_filters( 'payplug_gateway_customer_details', [
+
+		$customer_details = [
 			'first_name' => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_first_name : $order->get_billing_first_name(),
 			'last_name'  => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_last_name : $order->get_billing_last_name(),
 			'email'      => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_email : $order->get_billing_email(),
@@ -461,7 +462,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 			'postcode'   => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_postcode : $order->get_billing_postcode(),
 			'city'       => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_city : $order->get_billing_city(),
 			'country'    => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_country : $order->get_billing_country(),
-		] );
+		];
 
 		try {
 			$payment_data = [
@@ -497,9 +498,13 @@ class PayplugGateway extends WC_Payment_Gateway {
 				unset( $payment_data['customer']['country'] );
 			}
 
-			$payment_data = apply_filters( 'payplug_gateway_payment_data', $payment_data );
-
-			$payment = Payment::create( $payment_data );
+			/**
+			 * Filter the payment data before it's used
+			 *
+			 * @param array $payment_data
+			 */
+			$payment_data = apply_filters( 'payplug_gateway_payment_data', $payment_data, $order_id );
+			$payment      = Payment::create( $payment_data );
 
 			$redirect_url = $payment->hosted_payment->payment_url;
 			$cancel_url   = $payment->hosted_payment->cancel_url;
