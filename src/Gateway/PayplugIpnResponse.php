@@ -96,7 +96,7 @@ class PayplugIpnResponse {
 
 		$order_id = PayplugWoocommerceHelper::is_pre_30() ? $order->id : $order->get_id();
 
-		PayplugGateway::log( sprintf( 'Begin processing payment IPN %s for order %s', $resource->id, $order_id ) );
+		PayplugGateway::log( sprintf( 'Begin processing payment IPN %s for order #%s', $resource->id, $order_id ) );
 
 		// Ignore paid orders
 		if ( $order->has_status( wc_get_is_paid_statuses() ) ) {
