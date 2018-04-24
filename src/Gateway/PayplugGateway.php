@@ -448,14 +448,29 @@ class PayplugGateway extends WC_Payment_Gateway {
 			throw new \Exception( $amount->get_error_message() );
 		}
 
+		$customer_details = apply_filters( 'payplug_gateway_customer_details', [
+			'first_name' => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_first_name : $order->get_billing_first_name(),
+			'last_name'  => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_last_name : $order->get_billing_last_name(),
+			'email'      => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_email : $order->get_billing_email(),
+			'address1'   => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_address_1 : $order->get_billing_address_1(),
+			'address2'   => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_address_2 : $order->get_billing_address_2(),
+			'postcode'   => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_postcode : $order->get_billing_postcode(),
+			'city'       => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_city : $order->get_billing_city(),
+			'country'    => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_country : $order->get_billing_country(),
+		] );
+
 		try {
-			$payment = Payment::create( [
+			$payment_data = [
 				'amount'           => $amount,
 				'currency'         => get_woocommerce_currency(),
 				'customer'         => [
-					'first_name' => $this->limit_length( $order->get_billing_first_name() ),
-					'last_name'  => $this->limit_length( $order->get_billing_last_name() ),
-					'email'      => $this->limit_length( $order->get_billing_email(), 255 ),
+					'first_name' => $this->limit_length( $customer_details['first_name'] ),
+					'last_name'  => $this->limit_length( $customer_details['last_name'] ),
+					'email'      => $this->limit_length( $customer_details['email'], 255 ),
+					'address1'   => $this->limit_length( $customer_details['address1'], 255 ),
+					'postcode'   => $this->limit_length( $customer_details['postcode'], 16 ),
+					'city'       => $this->limit_length( $customer_details['city'] ),
+					'country'    => $this->limit_length( $customer_details['country'], 2 ),
 				],
 				'hosted_payment'   => [
 					'return_url' => esc_url_raw( $order->get_checkout_order_received_url() ),
@@ -465,9 +480,20 @@ class PayplugGateway extends WC_Payment_Gateway {
 				'metadata'         => [
 					'order_id'    => $order_id,
 					'customer_id' => ( (int) $customer_id > 0 ) ? $customer_id : 'guest',
-					'domain'      => $this->limit_length( esc_url_raw( home_url( '/' ) ), 500 ),
+					'domain'      => $this->limit_length( esc_url_raw( home_url() ), 500 ),
 				]
-			] );
+			];
+
+			if ( ! empty( $customer_details['address2'] ) ) {
+				$payment_data['customer']['address2'] = $this->limit_length( $customer_details['address2'], 255 );
+			}
+
+			// Don't send country code if it's not supported by PayPlug API
+			if ( ! in_array( strtolower( $payment_data['customer']['country'] ), PayplugWoocommerceHelper::get_supported_countries() ) ) {
+				unset( $payment_data['customer']['country'] );
+			}
+
+			$payment = Payment::create( apply_filters( 'payplug_gateway_payment_data', $payment_data ) );
 
 			$redirect_url = $payment->hosted_payment->payment_url;
 			$cancel_url   = $payment->hosted_payment->cancel_url;
