@@ -23,6 +23,9 @@ use WC_Payment_Gateway;
  */
 class PayplugGateway extends WC_Payment_Gateway {
 
+	/**
+	 * @var PayplugPermissions
+	 */
 	private $permissions;
 
 	/**
@@ -63,6 +66,9 @@ class PayplugGateway extends WC_Payment_Gateway {
 		);
 
 		$this->init_settings();
+		if ( $this->enabled ) {
+			$this->init_payplug();
+		}
 		$this->init_form_fields();
 
 		$this->title          = $this->get_option( 'title' );
@@ -78,10 +84,6 @@ class PayplugGateway extends WC_Payment_Gateway {
 		if ( 'test' === $this->mode ) {
 			$this->description .= ' ' . __( 'You are in TEST MODE. In test mode you can use the card 4242424242424242 with any valid expiration date and CVC.', 'payplug' );
 			$this->description = trim( $this->description );
-		}
-
-		if ( $this->enabled ) {
-			$this->init_payplug();
 		}
 
 		add_action( 'wp_enqueue_scripts', [ $this, 'scripts' ] );
@@ -112,7 +114,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 	 */
 	public function init_settings() {
 		parent::init_settings();
-		$this->enabled = ! empty( $this->settings['enabled'] ) && 'yes' === $this->settings['enabled'] ? 'yes' : 'no';
+		$this->enabled     = ! empty( $this->settings['enabled'] ) && 'yes' === $this->settings['enabled'] ? 'yes' : 'no';
 	}
 
 	/**
@@ -209,6 +211,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 				'description' => __( 'Choose which payment method will be used.', 'payplug' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
+				'disabled'    => ! $this->permissions->has_permissions( PayplugPermissions::SAVE_CARD ),
 			],
 		];
 	}
@@ -229,6 +232,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 
 		// Register IPN handler
 		new PayplugIpnResponse();
+		$this->permissions = new PayplugPermissions( $this );
 	}
 
 	/**
