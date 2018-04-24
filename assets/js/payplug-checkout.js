@@ -1,41 +1,91 @@
+/* global payplug_checkout_params */
+
 (function ($) {
 
-    var payplug_checkout = {
-        init: function () {
-            this.form = $('form.woocommerce-checkout');
+	/**
+	 * For now we need to redefine the `_closeIframe` from the Payplug object
+	 * to trigger an event when it run. This allow us to redirect the user to
+	 * the cancelURL manually.
+	 */
+	if (typeof Payplug != 'undefined') {
+		Payplug._closeIframe = function (callback) {
+			var node = document.getElementById("payplug-spinner");
+			if (node) {
+				node.style.display = "none";
+				node.parentNode.removeChild(node);
+			}
+			node = document.getElementById("wrapper-payplug-iframe");
+			if (node) {
+				this._fadeOut(node, function () {
+					if (callback) {
+						callback();
+					}
+				});
+			}
+			// Hard Remove iframe
+			node.parentNode.removeChild(node);
+			node = document.getElementById("iframe-payplug-close");
+			if (node && node.parentNode) {
+				node.parentNode.removeChild(node);
+			}
 
-            this.form.on(
-                'submit',
-                this.onSubmit
-            )
-        },
-        onSubmit: function (e) {
-            if (!payplug_checkout.isPayplugChosen()) {
-                return;
-            }
+			$(document).trigger('payplugClosedIframe');
+		}
+	}
 
-            // Prevent submit and stop all other listeners
-            // from being triggered.
-            e.preventDefault();
-            e.stopImmediatePropagation();
+	var payplug_checkout = {
+		init: function () {
+			if ($('form.woocommerce-checkout').length) {
+				this.form = $('form.woocommerce-checkout');
+				this.form.on(
+					'submit',
+					this.onSubmit
+				)
+			}
 
-            $.post(
-                payplug_checkout_params.ajax_url,
-                payplug_checkout.form.serialize()
-            ).done(payplug_checkout.openModal);
-        },
-        openModal: function (response) {
-            if ('success' !== response.result) {
-                response.message && alert(response.message);
-                return;
-            }
+			if ($('form#order_review').length) {
+				this.form = $('form#order_review');
+				this.form.on(
+					'submit',
+					this.onSubmit
+				)
+			}
 
-            Payplug.showPayment(response.redirect);
-        },
-        isPayplugChosen: function () {
-            return $('#payment_method_payplug').is(':checked');
-        }
-    };
+			$(document).on('payplugClosedIframe', this.handleClosedIframe);
+		},
+		onSubmit: function (e) {
+			if (!payplug_checkout.isPayplugChosen()) {
+				return;
+			}
 
-    payplug_checkout.init();
+			// Prevent submit and stop all other listeners
+			// from being triggered.
+			e.preventDefault();
+			e.stopImmediatePropagation();
+
+			$.post(
+				payplug_checkout_params.ajax_url,
+				payplug_checkout.form.serialize()
+			).done(payplug_checkout.openModal);
+		},
+		openModal: function (response) {
+			if ('success' !== response.result) {
+				response.message && alert(response.message);
+				return;
+			}
+
+			payplug_checkout.cancelUrl = response.cancel || false;
+			Payplug.showPayment(response.redirect);
+		},
+		handleClosedIframe: function () {
+			if (payplug_checkout.cancelUrl) {
+				window.location.href = payplug_checkout.cancelUrl;
+			}
+		},
+		isPayplugChosen: function () {
+			return $('#payment_method_payplug').is(':checked');
+		}
+	};
+
+	payplug_checkout.init();
 })(jQuery);
