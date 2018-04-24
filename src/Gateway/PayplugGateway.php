@@ -476,13 +476,16 @@ class PayplugGateway extends WC_Payment_Gateway {
 			] );
 
 			$redirect_url = $payment->hosted_payment->payment_url;
+			$cancel_url = $payment->hosted_payment->cancel_url;
 		} catch ( ConfigurationNotSetException $e ) {
 			$redirect_url = false;
+			$cancel_url = false;
 		}
 
 		return [
 			'result'   => 'success',
 			'redirect' => $redirect_url,
+			'cancel' => $cancel_url,
 		];
 	}
 
