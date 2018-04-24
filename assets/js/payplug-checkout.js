@@ -63,12 +63,16 @@
 			e.preventDefault();
 			e.stopImmediatePropagation();
 
+			payplug_checkout.$form.block();
+
 			$.post(
 				payplug_checkout_params.ajax_url,
 				payplug_checkout.$form.serialize()
 			).done(payplug_checkout.openModal);
 		},
 		openModal: function (response) {
+			payplug_checkout.$form.unblock();
+
 			if ('success' !== response.result) {
 				response.message && alert(response.message);
 				return;
