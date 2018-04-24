@@ -407,6 +407,12 @@ class PayplugGateway extends WC_Payment_Gateway {
 				}
 
 				switch ( $key ) {
+					case 'enabled':
+						$val = 'yes';
+						break;
+					case 'mode':
+						$val = 'no';
+						break;
 					case 'payplug_test_key':
 						$val = esc_attr( $response['test'] );
 						break;
@@ -415,9 +421,6 @@ class PayplugGateway extends WC_Payment_Gateway {
 						break;
 					case 'email':
 						$val = esc_html( $email );
-						break;
-					case 'mode':
-						$val = 'no';
 						break;
 					default:
 						$val = $this->get_option( $key );
