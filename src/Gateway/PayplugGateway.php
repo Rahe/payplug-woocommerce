@@ -96,9 +96,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 	public function get_icon() {
 		$icons = apply_filters( 'payplug_payment_icons', [
 			'visa'       => '<img src="' . WC()->plugin_url() . '/assets/images/icons/credit-cards/visa.svg" class="stripe-visa-icon stripe-icon" alt="Visa" />',
-			'amex'       => '<img src="' . WC()->plugin_url() . '/assets/images/icons/credit-cards/amex.svg" class="stripe-amex-icon stripe-icon" alt="American Express" />',
 			'mastercard' => '<img src="' . WC()->plugin_url() . '/assets/images/icons/credit-cards/mastercard.svg" class="stripe-mastercard-icon stripe-icon" alt="Mastercard" />',
-			'jcb'        => '<img src="' . WC()->plugin_url() . '/assets/images/icons/credit-cards/jcb.svg" class="stripe-jcb-icon stripe-icon" alt="JCB" />',
 		] );
 
 		$icons_str = '';
