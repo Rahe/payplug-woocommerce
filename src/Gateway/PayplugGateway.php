@@ -497,7 +497,9 @@ class PayplugGateway extends WC_Payment_Gateway {
 				unset( $payment_data['customer']['country'] );
 			}
 
-			$payment = Payment::create( apply_filters( 'payplug_gateway_payment_data', $payment_data ) );
+			$payment_data = apply_filters( 'payplug_gateway_payment_data', $payment_data );
+
+			$payment = Payment::create( $payment_data );
 
 			$redirect_url = $payment->hosted_payment->payment_url;
 			$cancel_url   = $payment->hosted_payment->cancel_url;
