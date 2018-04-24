@@ -110,6 +110,17 @@ class PayplugGateway extends WC_Payment_Gateway {
 	}
 
 	/**
+	 * Check if this gateway is enabled
+	 */
+	public function is_available() {
+		if ( 'yes' === $this->enabled ) {
+			return ! empty( $this->get_api_key( $this->get_current_mode() ) );
+		}
+
+		return parent::is_available();
+	}
+
+	/**
 	 * Load gateway settings.
 	 */
 	public function init_settings() {
