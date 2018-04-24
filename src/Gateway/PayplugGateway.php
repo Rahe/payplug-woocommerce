@@ -498,7 +498,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 			}
 
 			// Don't send country code if it's not supported by PayPlug API
-			if ( ! in_array( strtolower( $payment_data['customer']['country'] ), PayplugWoocommerceHelper::get_supported_countries() ) ) {
+			if ( ! in_array( strtoupper( $payment_data['customer']['country'] ), PayplugWoocommerceHelper::get_supported_countries() ) ) {
 				unset( $payment_data['customer']['country'] );
 			}
 
