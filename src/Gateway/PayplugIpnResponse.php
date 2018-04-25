@@ -11,6 +11,7 @@ use Payplug\Exception\UnknownAPIResourceException;
 use Payplug\Notification;
 use Payplug\PayplugWoocommerce\PayplugWoocommerceHelper;
 use Payplug\Resource\IVerifiableAPIResource;
+use WC_Payment_Token_CC;
 
 class PayplugIpnResponse {
 
@@ -143,10 +144,45 @@ class PayplugIpnResponse {
 	 *
 	 * @param \WC_Order $order
 	 * @param $resource
-	 *
-	 * @author Clément Boirie
 	 */
 	public function process_refund_resource( $order, $resource ) {
 
+	}
+
+	/**
+	 * Save card from the transaction.
+	 *
+	 * @param IVerifiableAPIResource $resource
+	 *
+	 * @return bool
+	 */
+	protected function maybe_save_card( $resource ) {
+
+		if ( ! $resource->save_card || ! isset( $resource->card ) ) {
+			return false;
+		}
+
+		if ( ! isset( $resource->metadata['customer_id'] ) ) {
+			return false;
+		}
+
+		$customer = get_user_by( 'id', $resource->metadata['customer_id'] );
+		if ( ! $customer || 0 === (int) $customer->ID ) {
+			return false;
+		}
+
+		PayplugGateway::log( sprintf( 'Saving card from transaction %s for customer %s', wc_clean( $resource->id ), $customer->ID ) );
+
+		$token = new WC_Payment_Token_CC();
+		$token->set_token( wc_clean( $resource->card->id ) );
+		$token->set_gateway_id( 'payplug' );
+		$token->set_last4( wc_clean( $resource->card->last4 ) );
+		$token->set_expiry_year( wc_clean( $resource->card->exp_year ) );
+		$token->set_expiry_month( zeroise( (int) wc_clean( $resource->card->exp_month ), 2 ) );
+		$token->set_card_type( wc_clean( $resource->card->brand ) );
+		$token->set_user_id( $customer->ID );
+		$token->save();
+
+		return true;
 	}
 }
