@@ -114,6 +114,9 @@ class PayplugIpnResponse {
 		}
 
 		if ( $resource->is_paid ) {
+
+			$this->maybe_save_card( $resource );
+
 			$payplug_metadata = self::extract_transaction_metadata( $resource );
 			update_post_meta( $order_id, '_payplug_metadata', $payplug_metadata );
 
