@@ -67,7 +67,7 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 		);
 
 		$this->init_settings();
-		if ( $this->enabled ) {
+		if ( 'yes' === $this->enabled ) {
 			$this->init_payplug();
 		}
 		$this->init_form_fields();
@@ -126,7 +126,7 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 	 */
 	public function init_settings() {
 		parent::init_settings();
-		$this->enabled     = ! empty( $this->settings['enabled'] ) && 'yes' === $this->settings['enabled'] ? 'yes' : 'no';
+		$this->enabled = ! empty( $this->settings['enabled'] ) && 'yes' === $this->settings['enabled'] ? 'yes' : 'no';
 	}
 
 	/**
