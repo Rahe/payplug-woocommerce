@@ -97,18 +97,18 @@ class PayplugIpnResponse {
 
 		$order_id = PayplugWoocommerceHelper::is_pre_30() ? $order->id : $order->get_id();
 
-		PayplugGateway::log( sprintf( 'Begin processing payment IPN %s for order #%s', $resource->id, $order_id ) );
+		PayplugGateway::log( sprintf( 'Order #%s : Begin processing payment IPN %s', $order_id, $resource->id ) );
 
 		// Ignore paid orders
 		if ( $order->has_status( wc_get_is_paid_statuses() ) ) {
-			PayplugGateway::log( sprintf( 'Order #%s is already complete. Ignoring IPN.', $order_id ) );
+			PayplugGateway::log( sprintf( 'Order #%s : Order is already complete. Ignoring IPN.', $order_id ) );
 
 			return;
 		}
 
 		// Ignore cancelled orders
 		if ( $order->has_status( 'cancelled' ) ) {
-			PayplugGateway::log( sprintf( 'Order #%s has been cancelled. Ignoring IPN', $order_id ) );
+			PayplugGateway::log( sprintf( 'Order #%s : Order has been cancelled. Ignoring IPN', $order_id ) );
 
 			return;
 		}
@@ -120,14 +120,14 @@ class PayplugIpnResponse {
 			$payplug_metadata = self::extract_transaction_metadata( $resource );
 			update_post_meta( $order_id, '_payplug_metadata', $payplug_metadata );
 
-			PayplugWoocommerceHelper::is_pre_30() ? update_post_meta( $order_id, '_transaction_id', $resource->id ) : $order->set_transaction_id( $resource->id );
-			$order->add_order_note( sprintf( __( 'PayPlug IPN OK | Transaction %s', 'payplug' ), $resource->id ) );
-			$order->payment_complete( $resource->id );
+			PayplugWoocommerceHelper::is_pre_30() ? update_post_meta( $order_id, '_transaction_id', wc_clean( $resource->id ) ) : $order->set_transaction_id( wc_clean( $resource->id ) );
+			$order->add_order_note( sprintf( __( 'PayPlug IPN OK | Transaction %s', 'payplug' ), wc_clean( $resource->id ) ) );
+			$order->payment_complete( wc_clean( $resource->id ) );
 			if ( PayplugWoocommerceHelper::is_pre_30() ) {
 				$order->reduce_order_stock();
 			}
 
-			PayplugGateway::log( sprintf( 'Order #%s is already complete. Ignoring IPN.', $order_id ) );
+			PayplugGateway::log( sprintf( 'Order #%s : Payment IPN %s processing completed.', $order_id, $resource->id ) );
 
 			return;
 		}
@@ -137,6 +137,8 @@ class PayplugIpnResponse {
 				'failed',
 				sprintf( __( 'PayPlug IPN OK | Transaction %s failed : %s', 'payplug' ), $resource->id, wc_clean( $resource->failure->message ) )
 			);
+
+			PayplugGateway::log( sprintf( 'Order #%s : Payment IPN %s processing completed.', $order_id, $resource->id ) );
 
 			return;
 		}
