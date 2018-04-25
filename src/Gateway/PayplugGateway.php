@@ -290,6 +290,14 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 		wp_enqueue_script( 'payplug-checkout' );
 	}
 
+	public function payment_fields() {
+		if ( $description = $this->get_description() ) {
+			echo wpautop( wptexturize( $description ) );
+		}
+
+		$this->saved_payment_methods();
+	}
+
 	/**
 	 * Handle admin display.
 	 */
