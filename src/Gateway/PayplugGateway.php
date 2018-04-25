@@ -10,7 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 use Payplug\Authentication;
 use Payplug\Core\HttpClient;
 use Payplug\Exception\BadRequestException;
-use Payplug\Exception\ConfigurationNotSetException;
 use Payplug\Payment;
 use Payplug\Payplug;
 use Payplug\PayplugWoocommerce\PayplugWoocommerceHelper;
