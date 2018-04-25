@@ -487,22 +487,34 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 			throw new \Exception( $amount->get_error_message() );
 		}
 
+		$payment_token_id = ( isset( $_POST[ 'wc-' . $this->id . '-payment-token' ] ) && 'new' !== $_POST[ 'wc-' . $this->id . '-payment-token' ] ) ? wc_clean( $_POST[ 'wc-' . $this->id . '-payment-token' ] ) : false;
+		if ( $payment_token_id ) {
+			PayplugGateway::log( sprintf( 'Payment token found.', $amount ) );
 
-		$customer_details = [
-			'first_name' => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_first_name : $order->get_billing_first_name(),
-			'last_name'  => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_last_name : $order->get_billing_last_name(),
-			'email'      => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_email : $order->get_billing_email(),
-			'address1'   => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_address_1 : $order->get_billing_address_1(),
-			'address2'   => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_address_2 : $order->get_billing_address_2(),
-			'postcode'   => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_postcode : $order->get_billing_postcode(),
-			'city'       => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_city : $order->get_billing_city(),
-			'country'    => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_country : $order->get_billing_country(),
-		];
+			return $this->process_payment_with_token( $order, $amount, $customer_id, $payment_token_id );
+		}
+
+		return $this->process_standard_payment( $order, $amount, $customer_id );
+	}
+
+	/**
+	 * @param \WC_Order $order
+	 * @param int $amount
+	 * @param int $customer_id
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function process_standard_payment( $order, $amount, $customer_id ) {
+
+		$order_id         = PayplugWoocommerceHelper::is_pre_30() ? $order->id : $order->get_id();
+		$customer_details = $this->prepare_customer_data( $order );
 
 		try {
 			$payment_data = [
 				'amount'           => $amount,
 				'currency'         => get_woocommerce_currency(),
+				'save_card'        => $this->oneclick && $this->permissions->has_permissions( PayplugPermissions::SAVE_CARD ),
 				'customer'         => [
 					'first_name' => $this->limit_length( $customer_details['first_name'] ),
 					'last_name'  => $this->limit_length( $customer_details['last_name'] ),
@@ -524,35 +536,103 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 				],
 			];
 
-			if ( ! empty( $customer_details['address2'] ) ) {
-				$payment_data['customer']['address2'] = $this->limit_length( $customer_details['address2'], 255 );
-			}
+			/**
+			 * Filter the payment data before it's used
+			 *
+			 * @param array $payment_data
+			 * @param int $order_id
+			 * @param array $customer_details
+			 */
+			$payment_data = apply_filters( 'payplug_gateway_payment_data', $payment_data, $order_id, $customer_details );
+			$payment      = Payment::create( $payment_data );
 
-			// Don't send country code if it's not supported by PayPlug API
-			if ( ! in_array( strtoupper( $payment_data['customer']['country'] ), PayplugWoocommerceHelper::get_supported_countries() ) ) {
-				unset( $payment_data['customer']['country'] );
-			}
+			return [
+				'result'   => 'success',
+				'redirect' => $payment->hosted_payment->payment_url,
+				'cancel'   => $payment->hosted_payment->cancel_url,
+			];
+		} catch ( \Exception $e ) {
+			PayplugGateway::log( sprintf( 'Error while processing order #%s : %s', $order_id, wc_print_r( $e->getErrorObject() ) ), 'error' );
+			throw new \Exception( __( 'Payment processing failed. Please retry.', 'payplug' ) );
+		}
+	}
+
+	/**
+	 * @param \WC_Order $order
+	 * @param int $amount
+	 * @param int $customer_id
+	 * @param string $token_id
+	 *
+	 * @return array
+	 * @throws \Exception
+	 */
+	public function process_payment_with_token( $order, $amount, $customer_id, $token_id ) {
+
+		$order_id         = PayplugWoocommerceHelper::is_pre_30() ? $order->id : $order->get_id();
+		$customer_details = $this->prepare_customer_data( $order );
+		$payment_token    = WC_Payment_Tokens::get( $token_id );
+		if ( ! $payment_token || (int) $customer_id !== (int) $payment_token->get_user_id() ) {
+			PayplugGateway::log( 'Could not find the payment token or the payment doesn\'t belong to the current user.', 'error' );
+			throw new \Exception( __( 'Invalid payment method.', 'payplug' ) );
+		}
+
+		try {
+			$payment_data = [
+				'amount'           => $amount,
+				'currency'         => get_woocommerce_currency(),
+				'payment_method'   => $payment_token->get_token(),
+				'customer'         => [
+					'first_name' => $this->limit_length( $customer_details['first_name'] ),
+					'last_name'  => $this->limit_length( $customer_details['last_name'] ),
+					'email'      => $this->limit_length( $customer_details['email'], 255 ),
+					'address1'   => $this->limit_length( $customer_details['address1'], 255 ),
+					'postcode'   => $this->limit_length( $customer_details['postcode'], 16 ),
+					'city'       => $this->limit_length( $customer_details['city'] ),
+					'country'    => $this->limit_length( $customer_details['country'], 2 ),
+				],
+				'notification_url' => esc_url_raw( WC()->api_request_url( 'PayplugGateway' ) ),
+				'metadata'         => [
+					'order_id'    => $order_id,
+					'customer_id' => ( (int) $customer_id > 0 ) ? $customer_id : 'guest',
+					'domain'      => $this->limit_length( esc_url_raw( home_url() ), 500 ),
+				],
+			];
 
 			/**
 			 * Filter the payment data before it's used
 			 *
 			 * @param array $payment_data
+			 * @param int $order_id
+			 * @param array $customer_details
 			 */
-			$payment_data = apply_filters( 'payplug_gateway_payment_data', $payment_data, $order_id );
+			$payment_data = apply_filters( 'payplug_gateway_payment_data', $payment_data, $order_id, $customer_details );
 			$payment      = Payment::create( $payment_data );
 
-			$redirect_url = $payment->hosted_payment->payment_url;
-			$cancel_url   = $payment->hosted_payment->cancel_url;
+			return [
+				'result'   => 'success',
+				'redirect' => $order->get_checkout_order_received_url(),
+			];
 		} catch ( \Exception $e ) {
 			PayplugGateway::log( sprintf( 'Error while processing order #%s : %s', $order_id, wc_print_r( $e->getErrorObject() ) ), 'error' );
-			$redirect_url = false;
-			$cancel_url   = false;
+			throw new \Exception( __( 'Payment processing failed. Please retry.', 'payplug' ) );
 		}
+	}
 
+	/**
+	 * @param \WC_Order $order
+	 *
+	 * @return array
+	 */
+	public function prepare_customer_data( $order ) {
 		return [
-			'result'   => 'success',
-			'redirect' => $redirect_url,
-			'cancel'   => $cancel_url,
+			'first_name' => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_first_name : $order->get_billing_first_name(),
+			'last_name'  => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_last_name : $order->get_billing_last_name(),
+			'email'      => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_email : $order->get_billing_email(),
+			'address1'   => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_address_1 : $order->get_billing_address_1(),
+			'address2'   => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_address_2 : $order->get_billing_address_2(),
+			'postcode'   => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_postcode : $order->get_billing_postcode(),
+			'city'       => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_city : $order->get_billing_city(),
+			'country'    => PayplugWoocommerceHelper::is_pre_30() ? $order->billing_country : $order->get_billing_country(),
 		];
 	}
 
