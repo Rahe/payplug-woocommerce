@@ -14,14 +14,15 @@ use Payplug\Exception\ConfigurationNotSetException;
 use Payplug\Payment;
 use Payplug\Payplug;
 use Payplug\PayplugWoocommerce\PayplugWoocommerceHelper;
-use WC_Payment_Gateway;
+use WC_Payment_Gateway_CC;
+use WC_Payment_Tokens;
 
 /**
  * PayPlug WooCommerce Gateway.
  *
  * @package Payplug\PayplugWoocommerce\Gateway
  */
-class PayplugGateway extends WC_Payment_Gateway {
+class PayplugGateway extends WC_Payment_Gateway_CC {
 
 	/**
 	 * @var PayplugPermissions
@@ -63,6 +64,7 @@ class PayplugGateway extends WC_Payment_Gateway {
 		$this->supports           = array(
 			'products',
 			'refunds',
+			'tokenization',
 		);
 
 		$this->init_settings();
