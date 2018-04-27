@@ -186,6 +186,7 @@ class PayplugIpnResponse {
 		$token->set_expiry_month( zeroise( (int) wc_clean( $resource->card->exp_month ), 2 ) );
 		$token->set_card_type( wc_clean( $resource->card->brand ) );
 		$token->set_user_id( $customer->ID );
+		$token->add_meta_data( 'mode', $resource->is_live ? 'live' : 'test', true );
 		$token->save();
 
 		return true;
