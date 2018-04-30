@@ -314,8 +314,8 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 		}
 
 		if ( is_user_logged_in() ) {
-			$user_tokens = WC_Payment_Tokens::get_customer_tokens( get_current_user_id(), $this->id );
-			$this->tokens = array_filter( $user_tokens, function( \WC_Payment_Token_CC $token ) {
+			$user_tokens  = WC_Payment_Tokens::get_customer_tokens( get_current_user_id(), $this->id );
+			$this->tokens = array_filter( $user_tokens, function ( \WC_Payment_Token_CC $token ) {
 				return $this->mode === $token->get_meta( 'mode', true );
 			} );
 		}
