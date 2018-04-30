@@ -67,7 +67,7 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 		);
 
 		$this->init_settings();
-		if ( 'yes' === $this->enabled ) {
+		if ( $this->user_logged_in() && 'yes' === $this->enabled ) {
 			$this->init_payplug();
 		}
 		$this->init_form_fields();
