@@ -133,7 +133,7 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 	 * Register gateway settings.
 	 */
 	public function init_form_fields() {
-		$this->form_fields = [
+		$fields = [
 			'enabled'                 => [
 				'title'       => __( 'Enable/Disable', 'payplug' ),
 				'type'        => 'checkbox',
@@ -223,9 +223,21 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 				'description' => __( 'Choose which payment method will be used.', 'payplug' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
-				'disabled'    => ! $this->permissions->has_permissions( PayplugPermissions::SAVE_CARD ),
 			],
 		];
+
+		// Disable One-Click checkbox if the user doesn't have the permission to use it.
+		if ( $this->user_logged_in() ) {
+			$fields['oneclick']['disabled'] = ! $this->permissions->has_permissions( PayplugPermissions::SAVE_CARD );
+		}
+
+		/**
+		 * Filter PayPlug gateway settings.
+		 *
+		 * @param array $fields
+		 */
+		$fields            = apply_filters( 'payplug_gateway_settings', $fields );
+		$this->form_fields = $fields;
 	}
 
 	/**
@@ -428,6 +440,7 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 				return false;
 			}
 
+			$this->init_form_fields();
 			$fields = $this->get_form_fields();
 			$data   = [];
 
