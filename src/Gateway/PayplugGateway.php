@@ -289,6 +289,28 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 		wp_enqueue_script( 'payplug-checkout' );
 	}
 
+	/**
+	 * Returns a users saved tokens for this gateway.
+	 *
+	 * Only payment tokens for the current mode will be returned
+	 *
+	 * @return array
+	 */
+	public function get_tokens() {
+		if ( sizeof( $this->tokens ) > 0 ) {
+			return $this->tokens;
+		}
+
+		if ( is_user_logged_in() ) {
+			$user_tokens = WC_Payment_Tokens::get_customer_tokens( get_current_user_id(), $this->id );
+			$this->tokens = array_filter( $user_tokens, function( \WC_Payment_Token_CC $token ) {
+				return $this->mode === $token->get_meta( 'mode', true );
+			} );
+		}
+
+		return $this->tokens;
+	}
+
 	public function payment_fields() {
 		if ( $description = $this->get_description() ) {
 			echo wpautop( wptexturize( $description ) );
