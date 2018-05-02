@@ -521,7 +521,10 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 			throw new \Exception( $amount->get_error_message() );
 		}
 
-		$payment_token_id = ( isset( $_POST[ 'wc-' . $this->id . '-payment-token' ] ) && 'new' !== $_POST[ 'wc-' . $this->id . '-payment-token' ] ) ? wc_clean( $_POST[ 'wc-' . $this->id . '-payment-token' ] ) : false;
+		$payment_token_id = ( isset( $_POST[ 'wc-' . $this->id . '-payment-token' ] ) && 'new' !== $_POST[ 'wc-' . $this->id . '-payment-token' ] )
+			? wc_clean( $_POST[ 'wc-' . $this->id . '-payment-token' ] )
+			: false;
+
 		if ( $payment_token_id ) {
 			PayplugGateway::log( sprintf( 'Payment token found.', $amount ) );
 
@@ -548,7 +551,7 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 			$payment_data = [
 				'amount'           => $amount,
 				'currency'         => get_woocommerce_currency(),
-				'save_card'        => $this->oneclick && $this->permissions->has_permissions( PayplugPermissions::SAVE_CARD ),
+				'save_card'        => $this->oneclick && $this->permissions->has_permissions( PayplugPermissions::SAVE_CARD ) && (int) $customer_id > 0,
 				'customer'         => [
 					'first_name' => $this->limit_length( $customer_details['first_name'] ),
 					'last_name'  => $this->limit_length( $customer_details['last_name'] ),
@@ -580,13 +583,15 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 			$payment_data = apply_filters( 'payplug_gateway_payment_data', $payment_data, $order_id, $customer_details );
 			$payment      = Payment::create( $payment_data );
 
+			PayplugGateway::log( sprintf( 'Payment creation complete for order #%s', $order_id ) );
+
 			return [
 				'result'   => 'success',
 				'redirect' => $payment->hosted_payment->payment_url,
 				'cancel'   => $payment->hosted_payment->cancel_url,
 			];
 		} catch ( \Exception $e ) {
-			PayplugGateway::log( sprintf( 'Error while processing order #%s : %s', $order_id, wc_print_r( $e->getErrorObject() ) ), 'error' );
+			PayplugGateway::log( sprintf( 'Error while processing payment for order #%s : %s', $order_id, wc_print_r( $e->getErrorObject() ) ), 'error' );
 			throw new \Exception( __( 'Payment processing failed. Please retry.', 'payplug' ) );
 		}
 	}
@@ -641,6 +646,8 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 			 */
 			$payment_data = apply_filters( 'payplug_gateway_payment_data', $payment_data, $order_id, $customer_details );
 			$payment      = Payment::create( $payment_data );
+
+			PayplugGateway::log( sprintf( 'Payment process complete for order #%s', $order_id ) );
 
 			return [
 				'result'   => 'success',
