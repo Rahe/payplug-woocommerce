@@ -58,6 +58,12 @@
 				return;
 			}
 
+			// Use standard checkout process if a payment token has been
+			// choose by a user.
+			if (payplug_checkout.isPaymentTokenSelected()) {
+				return;
+			}
+
 			//Prevent submit and stop all other listeners from being triggered.
 			e.preventDefault();
 			e.stopImmediatePropagation();
@@ -87,6 +93,9 @@
 		},
 		isPayplugChosen: function () {
 			return $('#payment_method_payplug').is(':checked');
+		},
+		isPaymentTokenSelected: function () {
+			return 'new' !== $('input[name=wc-payplug-payment-token]:checked').val();
 		}
 	};
 
