@@ -321,4 +321,19 @@ class PayplugWoocommerceHelper {
 	public static function get_maximum_amount() {
 		return 2000000;
 	}
+
+	/**
+	 * Convert amount in cents.
+	 *
+	 * @param float $amount
+	 *
+	 * @return int
+	 */
+	public static function get_payplug_amount( $amount ) {
+		if ( is_null( $amount ) ) {
+			return $amount;
+		}
+
+		return absint( wc_format_decimal( ( (float) $amount * 100 ), wc_get_price_decimals() ) );
+	}
 }
