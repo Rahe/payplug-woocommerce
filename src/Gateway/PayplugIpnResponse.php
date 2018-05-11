@@ -146,8 +146,110 @@ class PayplugIpnResponse {
 	 *
 	 * @param $resource
 	 */
-	public function process_refund_resource( $order, $resource ) {
+	public function process_refund_resource( $resource ) {
+		$transaction_id = wc_clean( $resource->payment_id );
+		$order          = $this->get_order_from_transaction_id( $transaction_id );
+		if ( ! $order ) {
+			PayplugGateway::log( sprintf( 'Coudn\'t find order for transaction %s (Refund %s).', wc_clean( $resource->payment_id ), wc_clean( $resource->id ) ), 'error' );
 
+			return;
+		}
+		$order_id = PayplugWoocommerceHelper::is_pre_30() ? $order->id : $order->get_id();
+
+		PayplugGateway::log( sprintf( 'Order #%s : Begin processing refund IPN %s', $order_id, $resource->id ) );
+
+		$refund_exist = $this->refund_exist_for_order( $order_id, $resource->id );
+		if ( $refund_exist ) {
+			PayplugGateway::log( sprintf( 'Order %s : Refund has already been processed. Ignoring IPN.', $order_id ) );
+
+			return;
+		}
+
+		$refund = wc_create_refund( [
+			'amount'         => ( (int) $resource->amount ) / 100,
+			'reason'         => isset( $resource->metadata['reason'] ) ? $resource->metadata['reason'] : null,
+			'order_id'       => (int) $order_id,
+			'refund_id'      => 0,
+			'refund_payment' => false,
+		] );
+		if ( is_wp_error( $refund ) ) {
+			PayplugGateway::log( $refund->get_error_message() );
+		}
+
+		$refund_meta_key = sprintf( '_pr_%s', wc_clean( $resource->id ) );
+		if ( PayplugWoocommerceHelper::is_pre_30() ) {
+			update_post_meta( $order_id, $refund_meta_key, $resource->id );
+		} else {
+			$order->add_meta_data( $refund_meta_key, $resource->id, true );
+			$order->save();
+		}
+
+		$note = sprintf( __( 'Refund %s : Refunded %s', 'payplug' ), wc_clean( $resource->id ), wc_price( ( (int) $resource->amount ) / 100 ) );
+		if ( ! empty( $resource->metadata['reason'] ) ) {
+			$note .= sprintf( ' (%s)', esc_html( $resource->metadata['reason'] ) );
+		}
+		$order->add_order_note( $note );
+
+		PayplugGateway::log( sprintf( 'Order #%s : Refund IPN %s processing completed.', $order_id, $resource->id ) );
+	}
+
+	/**
+	 * @param $transaction_id
+	 *
+	 * @return bool|\WC_Order|\WC_Refund
+	 */
+	protected function get_order_from_transaction_id( $transaction_id ) {
+		global $wpdb;
+
+		$order_id = $wpdb->get_var(
+			$wpdb->prepare(
+				"
+				SELECT post_id
+				FROM $wpdb->postmeta
+				WHERE meta_key = '_transaction_id'
+				AND meta_value = %s
+				",
+				$transaction_id
+			)
+		);
+
+		return ! is_null( $order_id ) ? wc_get_order( $order_id ) : false;
+	}
+
+	/**
+	 * @param string $refund_id
+	 *
+	 * @return bool
+	 */
+	protected function refund_exist_for_order( $order_id, $refund_id ) {
+		global $wpdb;
+
+		$sql = "
+			SELECT p.ID
+			FROM $wpdb->posts p
+			INNER JOIN $wpdb->postmeta pm
+				ON p.ID = pm.post_id
+			WHERE 1=1
+			AND p.post_type = %s
+			AND p.ID = %d
+			AND pm.meta_key LIKE '_pr_" . esc_sql( $refund_id ) . "'
+			AND pm.meta_value = %s
+			LIMIT 1
+		";
+
+		$results = $wpdb->get_col(
+			$wpdb->prepare(
+				$sql,
+				'shop_order',
+				(int) $order_id,
+				$refund_id,
+				$refund_id
+			)
+		);
+
+		error_log( $wpdb->last_query );
+
+		return ! empty( $results ) ? true : false;
 	}
 
 	/**
