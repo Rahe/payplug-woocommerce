@@ -414,6 +414,9 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 			isset( $data['submit_logout'] )
 			&& false !== check_admin_referer( 'payplug_user_logout', '_logoutaction' )
 		) {
+
+			$this->permissions->clear_permissions();
+
 			$data                     = get_option( $this->get_option_key() );
 			$data['payplug_test_key'] = '';
 			$data['payplug_live_key'] = '';
