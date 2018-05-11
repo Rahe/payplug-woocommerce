@@ -68,7 +68,7 @@
 			e.preventDefault();
 			e.stopImmediatePropagation();
 
-			payplug_checkout.$form.block();
+			payplug_checkout.$form.block({ message: null, overlayCSS: { background: '#fff', opacity: 0.6 } });
 
 			$.post(
 				payplug_checkout_params.ajax_url,
