@@ -31,7 +31,7 @@ class Notices {
 		}
 
 		$options          = get_option( 'woocommerce_payplug_settings' );
-		$testmode         = ( isset( $options['testmode'] ) && 'yes' === $options['testmode'] ) ? true : false;
+		$testmode         = ( isset( $options['mode'] ) && 'no' === $options['mode'] ) ? true : false;
 		$payplug_test_key = ! empty( $options['payplug_test_key'] ) ? $options['payplug_test_key'] : '';
 		$payplug_live_key = ! empty( $options['payplug_live_key'] ) ? $options['payplug_live_key'] : '';
 
