@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "041450e7ec0a2f30c20d6daa9c8351f5",
+    "content-hash": "d7a1a4d2e6deb6edd9470a63e92ac6a4",
     "packages": [
         {
             "name": "composer/installers",
@@ -128,16 +128,16 @@
         },
         {
             "name": "payplug/payplug-php",
-            "version": "dev-master",
+            "version": "2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/payplug/payplug-php.git",
-                "reference": "d8e62d938da2e731654297b4a9d7156a7dce5f7e"
+                "reference": "b382d15065284adb1e054b33e7e8ad5490a891fb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/payplug/payplug-php/zipball/d8e62d938da2e731654297b4a9d7156a7dce5f7e",
-                "reference": "d8e62d938da2e731654297b4a9d7156a7dce5f7e",
+                "url": "https://api.github.com/repos/payplug/payplug-php/zipball/b382d15065284adb1e054b33e7e8ad5490a891fb",
+                "reference": "b382d15065284adb1e054b33e7e8ad5490a891fb",
                 "shasum": ""
             },
             "require": {
@@ -170,15 +170,13 @@
             ],
             "description": "A simple PHP library for PayPlug public API.",
             "homepage": "https://www.payplug.com",
-            "time": "2018-04-04T10:37:39+00:00"
+            "time": "2015-05-06T00:00:00+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "payplug/payplug-php": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
