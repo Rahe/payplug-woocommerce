@@ -62,14 +62,7 @@ class PayplugIpnResponse {
 			exit;
 		}
 
-		$order_id = wc_clean( $resource->metadata['order_id'] );
-		$order    = wc_get_order( $order_id );
-		if ( false === $order ) {
-			PayplugGateway::log( sprintf( 'Coudn\'t find order #%s (Transaction %s).', $order_id, wc_clean( $resource->id ) ), 'error' );
-			exit;
-		}
-
-		call_user_func( [ $this, sprintf( 'process_%s_resource', $resource->object ) ], $order, $resource );
+		call_user_func( [ $this, sprintf( 'process_%s_resource', $resource->object ) ], $resource );
 		exit;
 	}
 
@@ -87,15 +80,19 @@ class PayplugIpnResponse {
 	/**
 	 * Process payment notification.
 	 *
-	 * @param \WC_Order $order
 	 * @param $resource
 	 *
 	 * @return void
 	 * @throws \WC_Data_Exception
 	 */
-	public function process_payment_resource( $order, $resource ) {
+	public function process_payment_resource( $resource ) {
+		$order_id = wc_clean( $resource->metadata['order_id'] );
+		$order    = wc_get_order( $order_id );
+		if ( ! $order ) {
+			PayplugGateway::log( sprintf( 'Coudn\'t find order #%s (Transaction %s).', $order_id, wc_clean( $resource->id ) ), 'error' );
 
-		$order_id = PayplugWoocommerceHelper::is_pre_30() ? $order->id : $order->get_id();
+			return;
+		}
 
 		PayplugGateway::log( sprintf( 'Order #%s : Begin processing payment IPN %s', $order_id, $resource->id ) );
 
@@ -147,7 +144,6 @@ class PayplugIpnResponse {
 	/**
 	 * Process refund notification.
 	 *
-	 * @param \WC_Order $order
 	 * @param $resource
 	 */
 	public function process_refund_resource( $order, $resource ) {
