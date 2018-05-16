@@ -24,6 +24,11 @@ use WC_Payment_Tokens;
 class PayplugGateway extends WC_Payment_Gateway_CC {
 
 	/**
+	 * @var PayplugGatewayRequirements
+	 */
+	private $requirements;
+
+	/**
 	 * @var PayplugPermissions
 	 */
 	private $permissions;
@@ -67,6 +72,7 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 		);
 
 		$this->init_settings();
+		$this->requirements = new PayplugGatewayRequirements( $this );
 		if ( $this->user_logged_in() && 'yes' === $this->enabled ) {
 			$this->init_payplug();
 		}
@@ -115,7 +121,7 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 	 */
 	public function is_available() {
 		if ( 'yes' === $this->enabled ) {
-			return ! empty( $this->get_api_key( $this->get_current_mode() ) );
+			return $this->requirements->satisfy_requirements() && ! empty( $this->get_api_key( $this->get_current_mode() ) );
 		}
 
 		return parent::is_available();
