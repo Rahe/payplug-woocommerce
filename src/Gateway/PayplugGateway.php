@@ -145,7 +145,7 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 				'type'        => 'checkbox',
 				'label'       => __( 'Enable PayPlug', 'payplug' ),
 				'description' => __( 'This gateway can only be enable for shop using euro has currency.', 'payplug' ),
-				'default'     => 'yes',
+				'default'     => 'no',
 			],
 			'title'                   => [
 				'title'       => __( 'Title', 'payplug' ),
