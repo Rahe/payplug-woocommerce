@@ -32,6 +32,19 @@ class PayplugGatewayRequirements {
 	}
 
 	/**
+	 * Check if all gateway requirements are fulfilled.
+	 *
+	 * @return bool
+	 */
+	public function satisfy_requirements() {
+		return $this->valid_php()
+		       && $this->valid_curl()
+		       && $this->valid_openssl()
+		       && $this->valid_currency()
+		       && $this->valid_account();
+	}
+
+	/**
 	 * @return string
 	 */
 	public function curl_requirement() {
