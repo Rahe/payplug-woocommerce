@@ -33,3 +33,7 @@ vendor
 
 # Temporary files
 *~
+
+# Codeception
+codeception.yml
+.env.local
