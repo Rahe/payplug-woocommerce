@@ -37,3 +37,6 @@ vendor
 # Codeception
 codeception.yml
 .env.local
+
+# build
+wordpress
