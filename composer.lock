@@ -4,13 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-<<<<<<< HEAD
-    "content-hash": "ec30ec5c0781b53e218eede07e5df367",
-||||||| merged common ancestors
-    "content-hash": "041450e7ec0a2f30c20d6daa9c8351f5",
-=======
-    "content-hash": "d7a1a4d2e6deb6edd9470a63e92ac6a4",
->>>>>>> origin/develop
+    "content-hash": "5c614b9e6c8ceb95c904ed6df1822816",
     "packages": [
         {
             "name": "composer/installers",
@@ -138,26 +132,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/payplug/payplug-php.git",
-<<<<<<< HEAD
-                "reference": "965cecdab6fe2648b9426f8cbf40ee6cfd0f848c"
-||||||| merged common ancestors
-                "reference": "d8e62d938da2e731654297b4a9d7156a7dce5f7e"
-=======
                 "reference": "b382d15065284adb1e054b33e7e8ad5490a891fb"
->>>>>>> origin/develop
             },
             "dist": {
                 "type": "zip",
-<<<<<<< HEAD
-                "url": "https://api.github.com/repos/payplug/payplug-php/zipball/965cecdab6fe2648b9426f8cbf40ee6cfd0f848c",
-                "reference": "965cecdab6fe2648b9426f8cbf40ee6cfd0f848c",
-||||||| merged common ancestors
-                "url": "https://api.github.com/repos/payplug/payplug-php/zipball/d8e62d938da2e731654297b4a9d7156a7dce5f7e",
-                "reference": "d8e62d938da2e731654297b4a9d7156a7dce5f7e",
-=======
                 "url": "https://api.github.com/repos/payplug/payplug-php/zipball/b382d15065284adb1e054b33e7e8ad5490a891fb",
                 "reference": "b382d15065284adb1e054b33e7e8ad5490a891fb",
->>>>>>> origin/develop
                 "shasum": ""
             },
             "require": {
@@ -190,8 +170,7 @@
             ],
             "description": "A simple PHP library for PayPlug public API.",
             "homepage": "https://www.payplug.com",
-<<<<<<< HEAD
-            "time": "2018-04-27T14:35:41+00:00"
+            "time": "2015-05-06T00:00:00+00:00"
         }
     ],
     "packages-dev": [
@@ -3437,16 +3416,16 @@
         },
         {
             "name": "symfony/browser-kit",
-            "version": "v4.0.11",
+            "version": "v4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/browser-kit.git",
-                "reference": "c43bfa0182363b3fd64331b5e64e467349ff4670"
+                "reference": "16355a5d0f1499c77efee5ff68d8ea61624d4da1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/browser-kit/zipball/c43bfa0182363b3fd64331b5e64e467349ff4670",
-                "reference": "c43bfa0182363b3fd64331b5e64e467349ff4670",
+                "url": "https://api.github.com/repos/symfony/browser-kit/zipball/16355a5d0f1499c77efee5ff68d8ea61624d4da1",
+                "reference": "16355a5d0f1499c77efee5ff68d8ea61624d4da1",
                 "shasum": ""
             },
             "require": {
@@ -3463,7 +3442,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                    "dev-master": "4.1-dev"
                 }
             },
             "autoload": {
@@ -3490,7 +3469,7 @@
             ],
             "description": "Symfony BrowserKit Component",
             "homepage": "https://symfony.com",
-            "time": "2018-03-19T22:35:49+00:00"
+            "time": "2018-04-06T10:52:03+00:00"
         },
         {
             "name": "symfony/config",
@@ -3627,16 +3606,16 @@
         },
         {
             "name": "symfony/css-selector",
-            "version": "v4.0.11",
+            "version": "v4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/css-selector.git",
-                "reference": "0383a1a4eb1ffcac28719975d3e01bfa14be8ab3"
+                "reference": "03ac71606ecb0b0ce792faa17d74cc32c2949ef4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/css-selector/zipball/0383a1a4eb1ffcac28719975d3e01bfa14be8ab3",
-                "reference": "0383a1a4eb1ffcac28719975d3e01bfa14be8ab3",
+                "url": "https://api.github.com/repos/symfony/css-selector/zipball/03ac71606ecb0b0ce792faa17d74cc32c2949ef4",
+                "reference": "03ac71606ecb0b0ce792faa17d74cc32c2949ef4",
                 "shasum": ""
             },
             "require": {
@@ -3645,7 +3624,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                    "dev-master": "4.1-dev"
                 }
             },
             "autoload": {
@@ -3676,7 +3655,7 @@
             ],
             "description": "Symfony CssSelector Component",
             "homepage": "https://symfony.com",
-            "time": "2018-05-11T15:58:37+00:00"
+            "time": "2018-05-30T07:26:09+00:00"
         },
         {
             "name": "symfony/debug",
@@ -3807,16 +3786,16 @@
         },
         {
             "name": "symfony/dom-crawler",
-            "version": "v4.0.11",
+            "version": "v4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dom-crawler.git",
-                "reference": "cf13fe774cabf4d32e8e234ec6efe7821e8b6ec1"
+                "reference": "3350cacf151b48d903114ab8f7a4ccb23e07e10a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/cf13fe774cabf4d32e8e234ec6efe7821e8b6ec1",
-                "reference": "cf13fe774cabf4d32e8e234ec6efe7821e8b6ec1",
+                "url": "https://api.github.com/repos/symfony/dom-crawler/zipball/3350cacf151b48d903114ab8f7a4ccb23e07e10a",
+                "reference": "3350cacf151b48d903114ab8f7a4ccb23e07e10a",
                 "shasum": ""
             },
             "require": {
@@ -3833,7 +3812,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "4.0-dev"
+                    "dev-master": "4.1-dev"
                 }
             },
             "autoload": {
@@ -3860,7 +3839,7 @@
             ],
             "description": "Symfony DomCrawler Component",
             "homepage": "https://symfony.com",
-            "time": "2018-05-01T23:00:51+00:00"
+            "time": "2018-05-01T23:02:13+00:00"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -6224,27 +6203,13 @@
             "description": "Handlebars processor for php",
             "homepage": "https://github.com/XaminProject/handlebars.php",
             "time": "2016-12-12T13:51:02+00:00"
-||||||| merged common ancestors
-            "time": "2018-04-04T10:37:39+00:00"
-=======
-            "time": "2015-05-06T00:00:00+00:00"
->>>>>>> origin/develop
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
-<<<<<<< HEAD
     "stability-flags": {
-        "payplug/payplug-php": 20,
         "lucatume/wp-browser": 20
     },
-||||||| merged common ancestors
-    "stability-flags": {
-        "payplug/payplug-php": 20
-    },
-=======
-    "stability-flags": [],
->>>>>>> origin/develop
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
