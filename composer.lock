@@ -4,7 +4,13 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "content-hash": "ec30ec5c0781b53e218eede07e5df367",
+||||||| merged common ancestors
+    "content-hash": "041450e7ec0a2f30c20d6daa9c8351f5",
+=======
+    "content-hash": "d7a1a4d2e6deb6edd9470a63e92ac6a4",
+>>>>>>> origin/develop
     "packages": [
         {
             "name": "composer/installers",
@@ -128,16 +134,30 @@
         },
         {
             "name": "payplug/payplug-php",
-            "version": "dev-master",
+            "version": "2.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/payplug/payplug-php.git",
+<<<<<<< HEAD
                 "reference": "965cecdab6fe2648b9426f8cbf40ee6cfd0f848c"
+||||||| merged common ancestors
+                "reference": "d8e62d938da2e731654297b4a9d7156a7dce5f7e"
+=======
+                "reference": "b382d15065284adb1e054b33e7e8ad5490a891fb"
+>>>>>>> origin/develop
             },
             "dist": {
                 "type": "zip",
+<<<<<<< HEAD
                 "url": "https://api.github.com/repos/payplug/payplug-php/zipball/965cecdab6fe2648b9426f8cbf40ee6cfd0f848c",
                 "reference": "965cecdab6fe2648b9426f8cbf40ee6cfd0f848c",
+||||||| merged common ancestors
+                "url": "https://api.github.com/repos/payplug/payplug-php/zipball/d8e62d938da2e731654297b4a9d7156a7dce5f7e",
+                "reference": "d8e62d938da2e731654297b4a9d7156a7dce5f7e",
+=======
+                "url": "https://api.github.com/repos/payplug/payplug-php/zipball/b382d15065284adb1e054b33e7e8ad5490a891fb",
+                "reference": "b382d15065284adb1e054b33e7e8ad5490a891fb",
+>>>>>>> origin/develop
                 "shasum": ""
             },
             "require": {
@@ -170,6 +190,7 @@
             ],
             "description": "A simple PHP library for PayPlug public API.",
             "homepage": "https://www.payplug.com",
+<<<<<<< HEAD
             "time": "2018-04-27T14:35:41+00:00"
         }
     ],
@@ -6203,14 +6224,27 @@
             "description": "Handlebars processor for php",
             "homepage": "https://github.com/XaminProject/handlebars.php",
             "time": "2016-12-12T13:51:02+00:00"
+||||||| merged common ancestors
+            "time": "2018-04-04T10:37:39+00:00"
+=======
+            "time": "2015-05-06T00:00:00+00:00"
+>>>>>>> origin/develop
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
+<<<<<<< HEAD
     "stability-flags": {
         "payplug/payplug-php": 20,
         "lucatume/wp-browser": 20
     },
+||||||| merged common ancestors
+    "stability-flags": {
+        "payplug/payplug-php": 20
+    },
+=======
+    "stability-flags": [],
+>>>>>>> origin/develop
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

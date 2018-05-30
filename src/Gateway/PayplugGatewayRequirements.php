@@ -32,12 +32,25 @@ class PayplugGatewayRequirements {
 	}
 
 	/**
+	 * Check if all gateway requirements are fulfilled.
+	 *
+	 * @return bool
+	 */
+	public function satisfy_requirements() {
+		return $this->valid_php()
+		       && $this->valid_curl()
+		       && $this->valid_openssl()
+		       && $this->valid_currency()
+		       && $this->valid_account();
+	}
+
+	/**
 	 * @return string
 	 */
 	public function curl_requirement() {
 		return ( $this->valid_curl() )
-			? '<p class="success">' . __( 'The PHP Curl extention is installed and available.', 'payplug' ) . '</p>'
-			: '<p class="failed">' . __( 'The PHP Curl extention was not found.', 'payplug' ) . '</p>';
+			? '<p class="success">' . __( 'PHP cURL extension is enabled on your server.', 'payplug' ) . '</p>'
+			: '<p class="failed">' . __( 'PHP cURL extension must be enabled on your server.', 'payplug' ) . '</p>';
 	}
 
 	/**
@@ -45,8 +58,8 @@ class PayplugGatewayRequirements {
 	 */
 	public function php_requirement() {
 		return ( $this->valid_php() )
-			? '<p class="success">' . __( 'Your PHP version is up-to-date.', 'payplug' ) . '</p>'
-			: '<p class="failed">' . __( sprintf( 'Your PHP version %s is not supported. The minimum supported version is 5.6.', PHP_VERSION ), 'payplug' ) . '</p>';
+			? '<p class="success">' . __( 'Your server is running a valid PHP version.', 'payplug' ) . '</p>'
+			: '<p class="failed">' . __( sprintf( 'Your PHP version %s is not supported. Your server must run PHP 5.6 or greater.', PHP_VERSION ), 'payplug' ) . '</p>';
 	}
 
 	/**
@@ -54,8 +67,8 @@ class PayplugGatewayRequirements {
 	 */
 	public function openssl_requirement() {
 		return ( $this->valid_openssl() )
-			? '<p class="success">' . __( 'Your OpenSSL version is up-to-date.', 'payplug' ) . '</p>'
-			: '<p class="failed">' . __( sprintf( 'Your OpenSSL version %s is not supported. The minimum supported version is 1.0.1.', OPENSSL_VERSION_TEXT ), 'payplug' ) . '</p>';
+			? '<p class="success">' . __( 'OpenSSL is up to date.', 'payplug' ) . '</p>'
+			: '<p class="failed">' . __( sprintf( 'Your OpenSSL version %s is not supported. OpenSSL 1.0.1 or later.', OPENSSL_VERSION_TEXT ), 'payplug' ) . '</p>';
 	}
 
 	/**
@@ -72,8 +85,8 @@ class PayplugGatewayRequirements {
 	 */
 	public function account_requirement() {
 		return ( $this->valid_account() )
-			? '<p class="success">' . __( 'You are logged in to your PayPlug account.', 'payplug' ) . '</p>'
-			: '<p class="failed">' . __( 'You must logged in to your PayPlug account.', 'payplug' ) . '</p>';
+			? '<p class="success">' . __( 'Your Payplug account is connected.', 'payplug' ) . '</p>'
+			: '<p class="failed">' . __( 'You must connect your Payplug account.', 'payplug' ) . '</p>';
 	}
 
 	/**
