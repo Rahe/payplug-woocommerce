@@ -10,6 +10,9 @@ tooling:
   setup-tests:
     service: appserver
     cmd: "bin/setup-lando.sh"
+  launch-phantom:
+    service: appserver
+    cmd: 'vendor/bin/phantomjs --webdriver=4444 --ssl-protocol=any --ignore-ssl-errors=true'
   test-wpunit:
       service: appserver
       cmd: composer test-wpunit
