@@ -1,0 +1,20 @@
+name: payplug
+recipe: wordpress
+config:
+  webroot: wordpress
+proxy:
+  appserver:
+    - payplug.localhost
+tooling:
+  # Runs composer install and a custom php script after your app starts
+  setup-tests:
+    service: appserver
+    cmd: "bin/setup-lando.sh"
+  test-wpunit:
+      service: appserver
+      cmd: composer test-wpunit
+      description: Run our wpunit tests
+  test-acceptance:
+      service: appserver
+      cmd: composer test-acceptance
+      description: Run our acceptance tests
