@@ -120,6 +120,7 @@ before_script:
   - ln -s $TRAVIS_BUILD_DIR $WP_FOLDER/wp-content/plugins
 
   - codecept build
+  - phantomjs --webdriver=4444 --ssl-protocol=any --ignore-ssl-errors=true &
 
 script:
   - codecept run wpunit
