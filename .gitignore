@@ -37,6 +37,7 @@ vendor
 # Codeception
 codeception.yml
 .env.local
+tests/acceptance.suite.yml
 
 # build
 wordpress
