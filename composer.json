@@ -23,9 +23,21 @@
             "Payplug\\PayplugWoocommerce\\": "src"
         }
     },
+    "scripts": {
+        "test-wpunit" : "vendor/bin/codecept run wpunit",
+        "test-acceptance" : "vendor/bin/codecept run acceptance",
+
+        "post-install-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ],
+        "post-update-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ]
+    },
     "require-dev": {
         "phpunit/phpunit": "^5.7",
         "lucatume/wp-browser": "dev-php-56-compat",
-        "vlucas/phpdotenv": "^2.4"
+        "vlucas/phpdotenv": "^2.4",
+        "jakoch/phantomjs-installer": "^2.1"
     }
 }
