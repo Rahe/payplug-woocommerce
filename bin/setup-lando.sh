@@ -19,3 +19,6 @@ wp import sample_products.xml --authors=create
 
 # Storefront theme
 wp theme install --activate storefront
+
+# Make the folder for woocommerce
+mkdir wordpress/wp-content/plugins/payplug-woocommerce/
