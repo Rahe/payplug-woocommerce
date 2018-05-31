@@ -32,12 +32,7 @@ php:
   - 7.0
   - 7.1
   - 7.2
-
-notifications:
-  email:
-    on_success: never
-    on_failure: change
-
+ 
 cache:
   directories:
     - $HOME/.composer/cache
@@ -119,4 +114,4 @@ before_script:
   - phantomjs --webdriver=4444 --ssl-protocol=any --ignore-ssl-errors=true &
 
 script:
-  - codecept run wpunit
+  - codecept run acceptance
