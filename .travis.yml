@@ -113,7 +113,7 @@ install:
 
 before_script:
   - sudo service php5-fpm restart
-  - sudo service nginx restart
+  - sudo service nginx restart 
 
   # symbolically link the plugin root folder to the WordPress installation folder
   # if you are using wp-browser use the Symlinker extension and skip this
