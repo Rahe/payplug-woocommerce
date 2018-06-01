@@ -47,12 +47,19 @@ env:
     - WP_ADMIN_USERNAME="admin"
     - WP_ADMIN_PASSWORD="admin"
   matrix:
-    # Wordpress versions
+    # WC 2.6.14
     - WP_VERSION=latest WC_VERSION=2.6.14
+    - WP_VERSION=4.8.6  WC_VERSION=2.6.14
+    - WP_VERSION=4.7.10 WC_VERSION=2.6.14
+    - WP_VERSION=4.6.11 WC_VERSION=2.6.14
+    - WP_VERSION=4.5.14 WC_VERSION=2.6.14
     - WP_VERSION=4.4.15 WC_VERSION=2.6.14
 
+    # WC 3.3.5
     - WP_VERSION=latest WC_VERSION=3.3.5
-    - WP_VERSION=4.4.15 WC_VERSION=3.3.5
+    - WP_VERSION=4.7.10 WC_VERSION=3.3.5
+    - WP_VERSION=4.8.6 WC_VERSION=3.3.5
+    
 before_install:
   # create the databases that will be used in the tests
   - mysql -e "create database IF NOT EXISTS $DB_NAME;" -uroot
