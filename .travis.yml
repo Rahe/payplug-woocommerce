@@ -39,7 +39,7 @@ cache:
 env:
   global:
     - WP_FOLDER="/tmp/wordpress"
-    - WP_URL="http://payplug.localhost"
+    - WP_URL="https://payplug.localhost"
     - WP_DOMAIN="payplug.localhost"
     - DB_NAME="test"
     - TEST_DB_NAME="wpTests"

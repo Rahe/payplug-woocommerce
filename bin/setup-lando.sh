@@ -21,9 +21,13 @@ wp import sample_products.xml --authors=create
 wp theme install --activate storefront
 
 # Make the folder for woocommerce, copy files initialy and folder
+cd ..
 mkdir wordpress/wp-content/plugins/payplug-woocommerce/
-cp payplug.php wordpress/wp-content/plugins/payplug-woocommerce/payplug.php
-cp -R src wordpress/wp-content/plugins/payplug-woocommerce/src/
-cp -R assets wordpress/wp-content/plugins/payplug-woocommerce/assets/
-cp -R languages wordpress/wp-content/plugins/payplug-woocommerce/languages/
-cp -R vendor wordpress/wp-content/plugins/payplug-woocommerce/vendor/
+cp -R payplug.php wordpress/wp-content/plugins/payplug-woocommerce/
+cp -R composer.json wordpress/wp-content/plugins/payplug-woocommerce/
+cp -R composer.lock wordpress/wp-content/plugins/payplug-woocommerce/
+cp -R src wordpress/wp-content/plugins/payplug-woocommerce/
+cp -R assets wordpress/wp-content/plugins/payplug-woocommerce/
+cp -R languages wordpress/wp-content/plugins/payplug-woocommerce/
+cd wordpress/wp-content/plugins/payplug-woocommerce/
+composer install --no-dev --prefer-dist -o
