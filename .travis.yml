@@ -87,6 +87,7 @@ install:
   # add Plugin
   - cp -r $TRAVIS_BUILD_DIR $WP_FOLDER/wp-content/plugins/payplug-woocommerce
   - cd $WP_FOLDER/wp-content/plugins/payplug-woocommerce
+  - rm -rf $WP_FOLDER/wp-content/plugins/payplug-woocommerce/tests/
   - composer install --prefer-dist -o --no-dev
   - cd $WP_FOLDER
   - wp plugin activate payplug-woocommerce
