@@ -114,11 +114,7 @@ install:
 before_script:
   - sudo service php5-fpm restart
   - sudo service nginx restart 
-
-  # symbolically link the plugin root folder to the WordPress installation folder
-  # if you are using wp-browser use the Symlinker extension and skip this
-  - ln -s $TRAVIS_BUILD_DIR $WP_FOLDER/wp-content/plugins
-
+  
   - codecept build
   - phantomjs --webdriver=4444 --ssl-protocol=any --ignore-ssl-errors=true &
 
