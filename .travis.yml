@@ -94,12 +94,18 @@ install:
   
   # Install Woocommerce to needed version
   - wp plugin install --activate woocommerce --version=$WC_VERSION --force
+  - wp plugin install --activate wordpress-importer
+  - wget https://raw.githubusercontent.com/woocommerce/woocommerce/master/sample-data/sample_products.xml
+
+  # Import the products
+  wp import sample_products.xml --authors=create
 
   # Storefront theme
   - wp theme install --activate storefront
 
   # flush rewrite rules to use pretty permalinks
   - wp rewrite structure '/%postname%/' --hard
+  - wp plugin list
  
   # get back to the build folder
   - cd $TRAVIS_BUILD_DIR
