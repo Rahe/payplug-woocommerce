@@ -2,7 +2,7 @@
 
 use \Codeception\Step\Argument\PasswordArgument;
 
-class AdminNotConfiguredCest {
+class AdminConfiguredCest {
 	/**
 	 * Login before
 	 *
