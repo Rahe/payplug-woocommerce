@@ -115,7 +115,7 @@ before_script:
   - sudo service php5-fpm restart
   - sudo service nginx restart 
   
-  - codecept build
+ # - codecept build
   - phantomjs --webdriver=4444 --ssl-protocol=any --ignore-ssl-errors=true &
 
 script:
