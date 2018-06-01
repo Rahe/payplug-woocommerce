@@ -120,4 +120,5 @@ before_script:
   - phantomjs --webdriver=4444 --ssl-protocol=any --ignore-ssl-errors=true &
 
 script:
+  - pwd
   - codecept run acceptance
