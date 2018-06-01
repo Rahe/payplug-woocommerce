@@ -83,7 +83,14 @@ install:
   - wp core download --version=$WP_VERSION
   - wp config create --dbname="$DB_NAME" --dbuser="root" --dbpass="" --dbhost="127.0.0.1" --dbprefix="$WP_TABLE_PREFIX"
   - wp core install --url="$WP_URL" --title="Test" --admin_user="$WP_ADMIN_USERNAME" --admin_password="$WP_ADMIN_PASSWORD" --admin_email="admin@$WP_DOMAIN" --skip-email
-
+  
+  # add Plugin
+  - cp -r $TRAVIS_BUILD_DIR $WP_FOLDER/wp-content/plugins/payplug-woocommerce
+  - cd $WP_FOLDER/wp-content/plugins/payplug-woocommerce
+  - composer install --prefer-dist -o --no-dev
+  - cd $WP_FOLDER
+  - wp plugin activate payplug-woocommerce
+  
   # Install Woocommerce to needed version
   - wp plugin install --activate woocommerce --version=$WC_VERSION --force
 
@@ -92,7 +99,7 @@ install:
 
   # flush rewrite rules to use pretty permalinks
   - wp rewrite structure '/%postname%/' --hard
-
+ 
   # get back to the build folder
   - cd $TRAVIS_BUILD_DIR
 
