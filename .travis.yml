@@ -125,7 +125,6 @@ before_script:
  # - codecept build
   - phantomjs --webdriver=4444 --ssl-protocol=any --ignore-ssl-errors=true 2>&1 >/dev/null &
   - sleep 5
-  - curl -v https://payplug.localhost
   - curl -v http://payplug.localhost
   
 script:
