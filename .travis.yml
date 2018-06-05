@@ -122,10 +122,7 @@ before_script:
   - sudo service php5-fpm restart
   - sudo service nginx restart 
   
- # - codecept build
-  - phantomjs --webdriver=4444 --ssl-protocol=any --ignore-ssl-errors=true 2>&1 >/dev/null &
-  - sleep 5
-  - curl -v http://payplug.localhost
+  - codecept build
   
 script:
   - pwd

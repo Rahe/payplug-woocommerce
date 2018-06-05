@@ -8,6 +8,7 @@ actor_suffix: Tester
 extensions:
     enabled:
         - Codeception\Extension\RunFailed
+        - Codeception\Extension\Phantoman
     commands:
         - Codeception\Command\GenerateWPUnit
         - Codeception\Command\GenerateWPRestApi
@@ -18,5 +19,9 @@ extensions:
         - Codeception\Command\GenerateWPXMLRPC
         - Codeception\Command\DbSnapshot
         - tad\Codeception\Command\SearchReplace
+    config:
+        Codeception\Extension\Phantoman:
+          port: 4444
+          suites: ['acceptance']
 params:
     - .env
