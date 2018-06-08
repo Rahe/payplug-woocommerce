@@ -25,19 +25,12 @@
     },
     "scripts": {
         "test-wpunit" : "vendor/bin/codecept run wpunit",
-        "test-acceptance" : "vendor/bin/codecept run acceptance",
-
-        "post-install-cmd": [
-            "PhantomInstaller\\Installer::installPhantomJS"
-        ],
-        "post-update-cmd": [
-            "PhantomInstaller\\Installer::installPhantomJS"
-        ]
+        "test-acceptance" : "vendor/bin/codecept run acceptance"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7",
         "lucatume/wp-browser": "dev-php-56-compat",
         "vlucas/phpdotenv": "^2.4",
-        "jakoch/phantomjs-installer": "^2.1"
+        "browserstack/browserstack-local": "dev-master"
     }
 }
