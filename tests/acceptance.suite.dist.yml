@@ -29,9 +29,40 @@ modules:
             adminPath: '%WP_ADMIN_PATH%'
         WPWebDriver:
             url: '%WP_URL%'
-            browser: phantomjs
-            port: 4444
-            window_size: 1024x768
             adminUsername: '%ADMIN_USERNAME%'
-            adminPassword: '%ADMIN_PASSWORD%'
+            adminPassword: '%ADMIN_USERNAME%'
             adminPath: '%WP_ADMIN_PATH%'
+            host: '%BROWSERSTACK_USER%:%BROWSERSTACK_KEY%@hub.browserstack.com'
+            port: 80
+            browser: chrome
+            capabilities:
+               browserstack.local: true # for local testing
+               browserstack.debug: true # Debug and capture videos/screenshots
+# Differents environements for the acceptance testing in browserStack
+env:
+  desktop:
+    modules:
+      config:
+        WebDriver:
+          browser: 'chrome'
+          capabilities:
+             os: Windows
+             os_version: 10
+  mobile_ios:
+    modules:
+      config:
+        WebDriver:
+          browser: 'chrome'
+          capabilities:
+           os_version: 10.3
+           device: "iPhone 7"
+           real_mobile: true
+  mobile_android:
+    modules:
+      config:
+        WebDriver:
+          browser: 'chrome'
+          capabilities:
+           os_version: 7.0
+           device: "Google Pixel"
+           real_mobile: true
