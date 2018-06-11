@@ -80,6 +80,9 @@ before_install:
   # prepend the `vendor/bin` folder the PATH
   - export PATH=vendor/bin:$PATH
 
+  - wget https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip
+  - unzip BrowserStackLocal-linux-x64.zip
+
 install:
   - composer install --prefer-dist -o --no-scripts
 
@@ -130,7 +133,7 @@ before_script:
   - sudo service nginx restart 
   
   - codecept build
-  - $HOME/.browserstack/BrowserStackLocal -F -k $BROWSERSTACK_KEY --daemon start
+  - ./BrowserStackLocal -F -k $BROWSERSTACK_KEY --daemon start
 
 script:
   - pwd
