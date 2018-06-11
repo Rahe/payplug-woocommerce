@@ -133,6 +133,8 @@ before_script:
 script:
   - pwd
 
+  - curl -I $WP_URL
+
   # Run unit tests
   - codecept run wpunit
 
