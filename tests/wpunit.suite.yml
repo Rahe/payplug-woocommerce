@@ -19,5 +19,5 @@ modules:
             adminEmail: "%ADMIN_EMAIL%"
             title: "Test"
             theme: "storefront"
-            plugins: ['payplug-woocommerce/payplug.php']
-            activatePlugins: ['payplug-woocommerce/payplug.php']
+            plugins: ['payplug-woocommerce/payplug.php','woocommerce/woocommerce.php']
+            activatePlugins: ['payplug-woocommerce/payplug.php','woocommerce/woocommerce.php']
