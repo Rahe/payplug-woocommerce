@@ -13,6 +13,11 @@
             "email": "technical@beapi.fr"
         }
     ],
+    "config": {
+        "platform": {
+            "php": ">=5.6.0"
+        }
+    },
     "require": {
         "php": ">=5.6.0",
         "composer/installers": "~1.0",
