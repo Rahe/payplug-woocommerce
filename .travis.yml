@@ -79,10 +79,6 @@ before_install:
   # prepend the `vendor/bin` folder the PATH
   - export PATH=vendor/bin:$PATH
 
-  # BrowsterStack Local installation
-  - wget https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip
-  - unzip BrowserStackLocal-linux-x64.zip
-
 install:
   - composer install --prefer-dist -o
 
@@ -126,9 +122,6 @@ install:
 
   # enable the WordPress installation
   - sudo ln -s /etc/nginx/sites-available/$WP_DOMAIN /etc/nginx/sites-enabled/
-
-  # Launch browserStack Local
-  - ./BrowserStackLocal --key %BROWSERSTACK_KEY% > /dev/null &
 
 before_script:
   - sudo service php5-fpm restart
