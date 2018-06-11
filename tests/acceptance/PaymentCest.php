@@ -1,8 +1,25 @@
 <?php
-opcache_reset();
+
+use \Codeception\Step\Argument\PasswordArgument;
 
 class PaymentCest {
+
+	public $setup = false;
+
 	public function _before( AcceptanceTester $I ) {
+
+		if ( ! $this->setup ) {
+			$I->loginAsAdmin();
+			$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
+
+			$I->fillField( 'payplug_email', getenv( 'PAYPLUG_TEST_EMAIL' ) );
+			$I->fillField( 'payplug_password', new PasswordArgument( getenv( 'PAYPLUG_TEST_PASSWORD' ) ) );
+
+			$I->click('.forminp input[type="submit"]');
+			$this->setup = true;
+		}
+
+
 		$I->am( 'Customer' );
 
 		$I->amOnPage( '/shop/' );
@@ -20,7 +37,7 @@ class PaymentCest {
 	 *
 	 * @param AcceptanceTester $I
 	 */
-	public function testNotConfiguredCheckoutMessagge( AcceptanceTester $I ) {
+	public function testNotConfiguredCheckoutMessage( AcceptanceTester $I ) {
 		$I->wantToTest( 'In DEV mode, checkout displays message' );
 
 		// Message for testers
@@ -53,9 +70,10 @@ class PaymentCest {
 
 		// Wheck we are on Payplug page
 		$I->waitForText( 'YOUR CARD' );
+		$I->waitForText( 'YOU ARE ON A TEST ENVIRONMENT.' );
 
 		// Right payment error
-		$I->fillField( [ 'id' => 'paymentCardNumber' ], "4242 4242 4242 4242" );
+		$I->fillField( [ 'id' => 'paymentCardNumber' ], "4242424242424242" );
 		$I->fillField( [ 'id' => 'paymentCardExpiration' ], "11/2099" );
 		$I->fillField( [ 'id' => 'paymentCardCvv' ], "123" );
 		$I->wait(1);
@@ -92,6 +110,7 @@ class PaymentCest {
 
 		// Wheck we are on Payplug page
 		$I->waitForText( 'YOUR CARD' );
+		$I->waitForText( 'YOU ARE ON A TEST ENVIRONMENT.' );
 
 		// Cancel
 		$I->click( '#linkBackMerchant' );
