@@ -130,7 +130,8 @@ before_script:
   - sudo service nginx restart 
   
   - codecept build
-  
+  - $HOME/.browserstack/BrowserStackLocal -F -k $BROWSERSTACK_KEY --daemon start
+
 script:
   - pwd
 
