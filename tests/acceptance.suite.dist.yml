@@ -36,7 +36,6 @@ modules:
             port: 80
             browser: chrome
             capabilities:
-               browserstack.local: true # for local testing
                browserstack.debug: true # Debug and capture videos/screenshots
                acceptSslCerts: true
                project: 'payplug-woocommerce'
