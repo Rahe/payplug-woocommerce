@@ -38,6 +38,10 @@ modules:
             capabilities:
                browserstack.local: true # for local testing
                browserstack.debug: true # Debug and capture videos/screenshots
+               acceptSslCerts: true
+               project: 'payplug-woocommerce'
+               build: '$BROWSERSTACK_LOCAL_IDENTIFIER'
+
 # Differents environements for the acceptance testing in browserStack
 env:
   desktop:
