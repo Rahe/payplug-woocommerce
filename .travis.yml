@@ -22,6 +22,9 @@ addons:
 
 cache:
   apt: true
+  directories: 
+     - vendor 
+     - $HOME/.composer/cache/files  
 
 # Test main supported versions of PHP against latest WP. 5.2 is min supported PHP version.
 php:
