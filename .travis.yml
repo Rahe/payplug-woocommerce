@@ -10,9 +10,8 @@ services:
 
 addons:
   browserstack:
-    username: johannalucie1
-    access_key:
-      secure: $BROWSERSTACK_KEY
+    username: $BROWSERSTACK_USER
+    access_key: $BROWSERSTACK_KEY
     forcelocal: true
     only: payplug.localhost,443,1
   apt:
