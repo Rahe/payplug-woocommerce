@@ -21,7 +21,8 @@ addons:
     - paylug.localhost
   browserstack:
     username: $BROWSERSTACK_USER
-    access_key: $BROWSERSTACK_KEY
+    access_key:
+      secure: $BROWSERSTACK_KEY
     forcelocal: true
 
 
