@@ -24,20 +24,10 @@ class AdminConfiguredCest {
 	 * @param AcceptanceTester $I
 	 */
 	public function _after( AcceptanceTester $I ) {
-		$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
-
-		$I->click('.forminp input[name="submit_logout"]');
-	}
-
-	public function checkLogged( AcceptanceTester $I ) {
-		$I->wantToTest( 'I am logged' );
-		$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
-
-		$I->canSee( 'Go to my dashboard' );
 	}
 
 	/**
-	 * @after checkLogged
+	 * @after restoreEuro
 	 */
 	public function checkEuro( AcceptanceTester $I ) {
 		$I->wantToTest( 'I have error message if Euro not selected as currency' );
@@ -50,11 +40,6 @@ class AdminConfiguredCest {
 		# Check disabled on payplug
 		$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
 		$I->canSee( 'Your shop must use Euro as your currency.' );
-
-		# Check payment disabled on admin list
-		$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout' );
-		$I->seeElement( 'tr[data-gateway_id="payplug"] .woocommerce-input-toggle--disabled' );
-
 	}
 
 	/**
