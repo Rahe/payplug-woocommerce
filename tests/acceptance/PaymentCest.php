@@ -52,12 +52,13 @@ class PaymentCest {
 		$I->click( '#place_order' );
 
 		// Wheck we are on Payplug page
-		$I->waitForText( 'VOTRE CARTE' );
+		$I->waitForText( 'YOUR CARD' );
 
 		// Right payment error
-		$I->fillField( [ 'id' => 'paymentCardNumber' ], "4242424242424242" );
+		$I->fillField( [ 'id' => 'paymentCardNumber' ], "4242 4242 4242 4242" );
 		$I->fillField( [ 'id' => 'paymentCardExpiration' ], "11/2099" );
 		$I->fillField( [ 'id' => 'paymentCardCvv' ], "123" );
+		$I->wait(1);
 
 		$I->click( '#payButton' );
 
@@ -90,7 +91,7 @@ class PaymentCest {
 		$I->click( '#place_order' );
 
 		// Wheck we are on Payplug page
-		$I->waitForText( 'VOTRE CARTE' );
+		$I->waitForText( 'YOUR CARD' );
 
 		// Cancel
 		$I->click( '#linkBackMerchant' );
