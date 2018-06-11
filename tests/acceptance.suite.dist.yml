@@ -33,7 +33,7 @@ modules:
             adminPassword: '%ADMIN_USERNAME%'
             adminPath: '%WP_ADMIN_PATH%'
             host: '%BROWSERSTACK_USER%:%BROWSERSTACK_KEY%@hub-cloud.browserstack.com'
-            port: 443
+            port: 80
             browser: chrome
             capabilities:
                browserstack.local: true # Enable de the browsetStack local
