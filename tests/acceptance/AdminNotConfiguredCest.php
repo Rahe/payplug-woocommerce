@@ -23,10 +23,10 @@ class AdminNotConfiguredCest {
 		$I->wantToTest( 'I have messages to configure the plugin' );
 		$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
 
-		$I->canSee( 'The PHP Curl extention is installed and available.' );
-		$I->canSee( 'Your PHP version is up-to-date.' );
-		$I->canSee( 'Your OpenSSL version is up-to-date.' );
-		$I->canSee( 'You must logged in to your PayPlug account.' );
+		$I->canSee( 'PHP cURL extension is enabled on your server.' );
+		$I->canSee( 'Your server is running a valid PHP version.' );
+		$I->canSee( 'OpenSSL is up to date.' );
+		$I->canSee( 'You must connect your Payplug account.' );
 		$I->canSee( 'Your shop use Euro as your currency.' );
 	}
 
