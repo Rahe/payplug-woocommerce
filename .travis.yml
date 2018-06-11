@@ -9,6 +9,12 @@ services:
   - mysql
 
 addons:
+  browserstack:
+    username: $BROWSERSTACK_USER
+    access_key:
+      secure: $BROWSERSTACK_KEY
+    forcelocal: true
+    only: payplug.localhost,443,1
   apt:
     packages:
       # required by WordPress
@@ -19,13 +25,6 @@ addons:
       - nginx
   hosts:
     - paylug.localhost
-  browserstack:
-    username: $BROWSERSTACK_USER
-    access_key:
-      secure: $BROWSERSTACK_KEY
-    forcelocal: true
-
-
 cache:
   apt: true
   directories: 
