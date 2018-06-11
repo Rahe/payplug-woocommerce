@@ -2,6 +2,7 @@ name: payplug
 recipe: wordpress
 config:
   webroot: wordpress
+  php: 5.6
 proxy:
   appserver:
     - payplug.localhost
