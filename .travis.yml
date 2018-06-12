@@ -47,7 +47,7 @@ env:
     - WP_FOLDER="/tmp/wordpress"
     - WP_URL="http://payplug.localhost"
     - WP_DOMAIN="payplug.localhost"
-    - WP_PORT="80"
+    - WP_PORT=""
     - DB_NAME="test"
     - TEST_DB_NAME="wpTests"
     - WP_TABLE_PREFIX="wp_"
