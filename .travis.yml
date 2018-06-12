@@ -18,6 +18,9 @@ addons:
   apt:
     packages:
       # required by WordPress
+      - php5-fpm
+      - php5-mysql
+      - libjpeg-dev
       - libjpeg-dev
       - libpng12-dev
       - nginx
@@ -66,7 +69,7 @@ env:
     #- WP_VERSION=4.8.6 WC_VERSION=3.3.5
     
 before_install:
-  - composer global require --prefer-dist "typisttech/travis-nginx-wordpress:^1.0.0"
+  #- composer global require --prefer-dist "typisttech/travis-nginx-wordpress:^1.0.0"
   # create the databases that will be used in the tests
   - mysql -e "create database IF NOT EXISTS $DB_NAME;" -uroot
   - mysql -e "create database IF NOT EXISTS $TEST_DB_NAME;" -uroot
@@ -121,18 +124,18 @@ install:
   - cd $TRAVIS_BUILD_DIR
 
   # copy the Nginx configuration file to the default site and replace the path and domain
-  #- sudo cp bin/travis-nginx-conf /etc/nginx/sites-available/$WP_DOMAIN
-  #- sudo sed -e "s?%WP_FOLDER%?$WP_FOLDER?g" --in-place /etc/nginx/sites-available/$WP_DOMAIN
-  #- sudo sed -e "s?%WP_DOMAIN%?$WP_DOMAIN?g" --in-place /etc/nginx/sites-available/$WP_DOMAIN
+  - sudo cp bin/travis-nginx-conf /etc/nginx/sites-available/$WP_DOMAIN
+  - sudo sed -e "s?%WP_FOLDER%?$WP_FOLDER?g" --in-place /etc/nginx/sites-available/$WP_DOMAIN
+  - sudo sed -e "s?%WP_DOMAIN%?$WP_DOMAIN?g" --in-place /etc/nginx/sites-available/$WP_DOMAIN
 
   # enable the WordPress installation
-  #- sudo ln -s /etc/nginx/sites-available/$WP_DOMAIN /etc/nginx/sites-enabled/
-  #- cat /etc/nginx/sites-available/$WP_DOMAIN
-  - tnw-install-nginx
+  - sudo ln -s /etc/nginx/sites-available/$WP_DOMAIN /etc/nginx/sites-enabled/
+  - cat /etc/nginx/sites-available/$WP_DOMAIN
+  #- tnw-install-nginx
 
 before_script:
-  #- sudo service php5-fpm restart
-  #- sudo service nginx restart 
+  - sudo service php5-fpm restart
+  - sudo service nginx restart 
   
   - codecept build
   #- ./BrowserStackLocal -F -k $BROWSERSTACK_KEY --daemon start
