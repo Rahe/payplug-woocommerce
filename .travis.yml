@@ -47,7 +47,7 @@ env:
     - WP_FOLDER="/tmp/wordpress"
     - WP_URL="http://payplug.localhost"
     - WP_DOMAIN="payplug.localhost"
-    - WP_PORT=""
+    #- WP_PORT=""
     - DB_NAME="test"
     - TEST_DB_NAME="wpTests"
     - WP_TABLE_PREFIX="wp_"
@@ -106,8 +106,8 @@ install:
   
   # Install Woocommerce to needed version
   - wp plugin install --activate woocommerce --version=$WC_VERSION --force
-  - wp plugin install --activate wordpress-importer
-  - wget https://raw.githubusercontent.com/woocommerce/woocommerce/master/sample-data/sample_products.xml
+  #- wp plugin install --activate wordpress-importer
+  #- wget https://raw.githubusercontent.com/woocommerce/woocommerce/master/sample-data/sample_products.xml
 
   # Import the products
   - wp import sample_products.xml --authors=create
