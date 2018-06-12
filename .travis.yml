@@ -88,8 +88,8 @@ before_install:
   - export PATH=$HOME/.composer/vendor/bin:$PATH
 
   # BrowsterStack Local installation  
- - wget https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip
- - unzip BrowserStackLocal-linux-x64.zip
+  - wget https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip
+  - unzip BrowserStackLocal-linux-x64.zip
 
 install:
   - composer install --prefer-dist -o --no-scripts
