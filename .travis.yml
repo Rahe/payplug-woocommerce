@@ -130,7 +130,7 @@ install:
   # enable the WordPress installation
   #- sudo ln -s /etc/nginx/sites-available/$WP_DOMAIN /etc/nginx/sites-enabled/
   #- cat /etc/nginx/sites-available/$WP_DOMAIN
-  - sudo tnw-install-nginx
+  - tnw-install-nginx
 
 before_script:
   #- sudo service php5-fpm restart
