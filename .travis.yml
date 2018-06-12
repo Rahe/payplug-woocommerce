@@ -24,7 +24,7 @@ addons:
       - php5-mysql
       - nginx
   hosts:
-    - paylug.localhost
+    - payplug.localhost
 cache:
   apt: true
   directories: 
