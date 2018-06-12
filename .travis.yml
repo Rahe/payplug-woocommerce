@@ -20,8 +20,6 @@ addons:
       # required by WordPress
       - libjpeg-dev
       - libpng12-dev
-      - php5-fpm
-      - php5-mysql
       - nginx
   hosts:
     - payplug.localhost
@@ -144,6 +142,7 @@ script:
 
   - curl -I http://payplug.localhost
   - curl -I https://payplug.localhost
+  - curl -I http://payplug.localhost:8080
 
   # Run unit tests
   - codecept run wpunit
