@@ -152,9 +152,9 @@ script:
   - codecept run wpunit
 
   # Front office for acceptance into multiple devices
-  #- codecept run acceptance PaymentCest --env mobile_android --env desktop --env mobile_ios
-  #- codecept run acceptance PaymentCest:testNotConfiguredCheckoutMessage --env desktop
+  - codecept run acceptance PaymentCest --env mobile_android --env desktop --env mobile_ios
+  - codecept run acceptance PaymentCest:testNotConfiguredCheckoutMessage --env desktop
 
   # Bakcoffice for acceptance into desktop only
-  #- codecept run acceptance AdminConfiguredCest --env desktop
-  #- codecept run acceptance AdminNotConfiguredCest --env desktop
+  - codecept run acceptance AdminConfiguredCest --env desktop
+  - codecept run acceptance AdminNotConfiguredCest --env desktop
