@@ -86,8 +86,6 @@ before_install:
   # Export the composer commands
   - export PATH=$HOME/.composer/vendor/bin:$PATH
 
-  - sudo tnw-install-nginx
-
 install:
   - composer install --prefer-dist -o --no-scripts
 
@@ -132,6 +130,7 @@ install:
   # enable the WordPress installation
   #- sudo ln -s /etc/nginx/sites-available/$WP_DOMAIN /etc/nginx/sites-enabled/
   #- cat /etc/nginx/sites-available/$WP_DOMAIN
+  - sudo tnw-install-nginx
 
 before_script:
   #- sudo service php5-fpm restart
