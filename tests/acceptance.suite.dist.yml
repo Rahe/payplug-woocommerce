@@ -40,7 +40,7 @@ modules:
                browserstack.debug: true # Debug and capture videos/screenshots
                acceptSslCerts: true
                project: 'payplug-woocommerce'
-               build: '%BROWSERSTACK_LOCAL_IDENTIFIER%'
+               build: '%TRAVIS_BUILD_NUMBER%'
 
 # Differents environements for the acceptance testing in browserStack
 env:
