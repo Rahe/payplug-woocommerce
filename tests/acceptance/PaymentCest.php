@@ -73,7 +73,12 @@ class PaymentCest {
 		$I->waitForText( 'YOU ARE ON A TEST ENVIRONMENT.' );
 
 		// Right payment error
-		$I->fillField( [ 'id' => 'paymentCardNumber' ], "4242424242424242" );
+		foreach( [4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2 ] as $char) {
+			var_dump($I->grabValueFrom('#paymentCardNumber').$char);
+			$I->fillField( [ 'id' => 'paymentCardNumber' ], $I->grabValueFrom('#paymentCardNumber').$char );
+			$I->wait(1);
+		}
+
 		$I->fillField( [ 'id' => 'paymentCardExpiration' ], "11/2099" );
 		$I->fillField( [ 'id' => 'paymentCardCvv' ], "123" );
 		$I->wait(1);
