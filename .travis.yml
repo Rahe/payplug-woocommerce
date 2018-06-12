@@ -119,6 +119,7 @@ install:
   # flush rewrite rules to use pretty permalinks
   - wp rewrite structure '/%postname%/' --hard
   - wp plugin list
+  - wp search-replace https://payplug.localhost http://payplug.localhost --precise --all-tables
  
   # get back to the build folder
   - cd $TRAVIS_BUILD_DIR
