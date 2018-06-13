@@ -61,9 +61,6 @@ class PaymentCest {
 		$I->fillField( 'billing_email', "test@payplug.localhost" );
 		$I->fillField( 'billing_phone', "0123456789" );
 
-		// Check the options
-		$I->checkOption( 'payment_method' );
-
 		// wait ajax done, submit the form
 		$I->wait(1);
 		$I->waitForElement( '#place_order' );
@@ -86,6 +83,8 @@ class PaymentCest {
 
 		$I->waitForText( 'Order received' );
 		$I->waitForText( 'Thank you. Your order has been received.' );
+
+		$I->seePostInDatabase([ 'post_status' => 'wc-pending' ]);
 	}
 
 	/**
@@ -105,10 +104,8 @@ class PaymentCest {
 		$I->fillField( 'billing_email', "test@payplug.localhost" );
 		$I->fillField( 'billing_phone', "0123456789" );
 
-		// Check the options
-		$I->checkOption( 'payment_method' );
-
 		// wait ajax done, submit the form
+		$I->wait(1);
 		$I->waitForElement( '#place_order' );
 		$I->click( '#place_order' );
 
@@ -120,5 +117,8 @@ class PaymentCest {
 		$I->click( '#linkBackMerchant' );
 
 		$I->waitForText( 'Your order was cancelled.' );
+
+		$I->seePostInDatabase([ 'post_status' => 'wc-cancelled' ]);
+
 	}
 }
