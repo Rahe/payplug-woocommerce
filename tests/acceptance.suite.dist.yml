@@ -47,7 +47,7 @@ env:
   desktop:
     modules:
       config:
-        WebDriver:
+        WPWebDriver:
           browser: 'chrome'
           capabilities:
              os: Windows
@@ -55,7 +55,7 @@ env:
   mobile_ios:
     modules:
       config:
-        WebDriver:
+        WPWebDriver:
           browser: 'chrome'
           capabilities:
            os_version: 10.3
@@ -64,7 +64,7 @@ env:
   mobile_android:
     modules:
       config:
-        WebDriver:
+        WPWebDriver:
           browser: 'chrome'
           capabilities:
            os_version: 7.0
