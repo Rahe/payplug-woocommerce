@@ -65,6 +65,7 @@ class PaymentCest {
 		$I->checkOption( 'payment_method' );
 
 		// wait ajax done, submit the form
+		$I->wait(1);
 		$I->waitForElement( '#place_order' );
 		$I->click( '#place_order' );
 
@@ -74,9 +75,7 @@ class PaymentCest {
 
 		// Right payment error
 		foreach( [4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2 ] as $char) {
-			var_dump($I->grabValueFrom('#paymentCardNumber').$char);
-			$I->fillField( [ 'id' => 'paymentCardNumber' ], $I->grabValueFrom('#paymentCardNumber').$char );
-			$I->wait(1);
+			$I->pressKey('#paymentCardNumber', $char);
 		}
 
 		$I->fillField( [ 'id' => 'paymentCardExpiration' ], "11/2099" );
