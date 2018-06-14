@@ -8,6 +8,7 @@ class AdminNotConfiguredCest {
 	}
 
 	public function _after( AcceptanceTester $I ) {
+
 	}
 
 	// tests
@@ -47,6 +48,36 @@ class AdminNotConfiguredCest {
 
 		$I->fillField( 'payplug_email', getenv( 'PAYPLUG_TEST_EMAIL' ) );
 		$I->fillField( 'payplug_password',  new PasswordArgument( getenv( 'PAYPLUG_TEST_PASSWORD' ) ) );
+
+		$I->click( '.forminp input[type="submit"]' );
+		$I->canSee( 'Successfully logged in.' );
+		$I->canSee( 'Your settings have been saved.' );
+		$I->canSee( 'PayPlug is in TEST mode' );
+		$I->canSee( 'When your account is approved by PayPlug, please disconnect and reconnect in the settings page to activate LIVE mode.' );
+	}
+
+	public function checkNoLiveForNotCertified( AcceptanceTester $I ) {
+		$I->wantToTest( 'I cannot activate Live mode' );
+		$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
+
+		$I->fillField( 'payplug_email', getenv( 'PAYPLUG_TEST_EMAIL' ) );
+		$I->fillField( 'payplug_password',  new PasswordArgument( getenv( 'PAYPLUG_TEST_PASSWORD' ) ) );
+
+		$I->click( '.forminp input[type="submit"]' );
+		$I->click( 'label[for="woocommerce_payplug_mode-yes"]' );
+		
+		$I->click( '.submit button' );
+		$I->canSee( 'Your account does not currently support LIVE mode, it need to be approved first. If your account has already been approved, please log out and log back in.' );
+
+		$I->seeCheckboxIsChecked('#woocommerce_payplug_mode-no');
+	}
+
+	public function checkLoginSuccessCertified( AcceptanceTester $I ) {
+		$I->wantToTest( 'I have login success message with certified' );
+		$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
+
+		$I->fillField( 'payplug_email', getenv( 'PAYPLUG_TEST_EMAIL_CERTIFIED' ) );
+		$I->fillField( 'payplug_password',  new PasswordArgument( getenv( 'PAYPLUG_TEST_PASSWORD_CERTIFIED' ) ) );
 
 		$I->click( '.forminp input[type="submit"]' );
 		$I->canSee( 'Successfully logged in.' );
