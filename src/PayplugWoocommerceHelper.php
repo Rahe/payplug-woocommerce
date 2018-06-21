@@ -7,6 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+use Payplug\Resource\IVerifiableAPIResource;
+
 /**
  * Helper class.
  *
@@ -335,5 +337,28 @@ class PayplugWoocommerceHelper {
 		}
 
 		return absint( wc_format_decimal( ( (float) $amount * 100 ), wc_get_price_decimals() ) );
+	}
+
+	/**
+	 * Extract useful metadata from PayPlug response.
+	 *
+	 * @param IVerifiableAPIResource $resource
+	 *
+	 * @return array
+	 */
+	public static function extract_transaction_metadata( $resource ) {
+		return [
+			'transaction_id' => sanitize_text_field( $resource->id ),
+			'paid'           => (bool) $resource->is_paid,
+			'amount'         => sanitize_text_field( $resource->amount ),
+			'3ds'            => (bool) $resource->is_3ds,
+			'live'           => (bool) $resource->is_live,
+			'paid_at'        => sanitize_text_field( $resource->hosted_payment->paid_at ),
+			'card_last4'     => sanitize_text_field( $resource->card->last4 ),
+			'card_exp_month' => sanitize_text_field( $resource->card->exp_month ),
+			'card_exp_year'  => sanitize_text_field( $resource->card->exp_year ),
+			'card_brand'     => sanitize_text_field( $resource->card->brand ),
+			'card_country'   => sanitize_text_field( $resource->card->country ),
+		];
 	}
 }

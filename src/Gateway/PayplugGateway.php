@@ -73,7 +73,7 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 
 		$this->init_settings();
 		$this->requirements = new PayplugGatewayRequirements( $this );
-		if ( $this->user_logged_in() && 'yes' === $this->enabled ) {
+		if ( $this->user_logged_in() ) {
 			$this->init_payplug();
 		}
 		$this->init_form_fields();
@@ -226,14 +226,14 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 				'title'       => __( 'One Click Payment', 'payplug' ),
 				'type'        => 'checkbox',
 				'label'       => __( 'Activate', 'payplug' ),
-				'description' => __( 'Choose which payment method will be used.', 'payplug' ),
+				'description' => __( 'Offers your users to save their credit card for later.', 'payplug' ),
 				'default'     => 'no',
 				'desc_tip'    => true,
 			],
 		];
 
 		// Disable One-Click checkbox if the user doesn't have the permission to use it.
-		if ( $this->user_logged_in() ) {
+		if ( $this->user_logged_in() && 'live' === $this->get_current_mode() ) {
 			$fields['oneclick']['disabled'] = ! $this->permissions->has_permissions( PayplugPermissions::SAVE_CARD );
 		}
 
@@ -523,7 +523,7 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 
 		$order       = wc_get_order( $order_id );
 		$customer_id = PayplugWoocommerceHelper::is_pre_30() ? $order->customer_user : $order->get_customer_id();
-		$amount      = (int) number_format( $order->get_total(), 2, '.', '' ) * 100;
+		$amount      = (int) PayplugWoocommerceHelper::get_payplug_amount( $order->get_total() );
 		$amount      = $this->validate_order_amount( $amount );
 		if ( is_wp_error( $amount ) ) {
 			PayplugGateway::log( sprintf( 'Invalid amount %s for the order.', $amount ), 'error' );
@@ -591,6 +591,9 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 			 */
 			$payment_data = apply_filters( 'payplug_gateway_payment_data', $payment_data, $order_id, $customer_details );
 			$payment      = Payment::create( $payment_data );
+
+			$payplug_metadata = PayplugWoocommerceHelper::extract_transaction_metadata( $payment );
+			update_post_meta( $order_id, '_payplug_metadata', $payplug_metadata );
 
 			PayplugGateway::log( sprintf( 'Payment creation complete for order #%s', $order_id ) );
 

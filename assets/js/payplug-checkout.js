@@ -68,7 +68,7 @@
 			e.preventDefault();
 			e.stopImmediatePropagation();
 
-			payplug_checkout.$form.block({ message: null, overlayCSS: { background: '#fff', opacity: 0.6 } });
+			payplug_checkout.$form.block({message: null, overlayCSS: {background: '#fff', opacity: 0.6}});
 
 			$.post(
 				payplug_checkout_params.ajax_url,
@@ -79,7 +79,8 @@
 			payplug_checkout.$form.unblock();
 
 			if ('success' !== response.result) {
-				response.message && alert(response.message);
+				var error_messages = response.messages || '';
+				payplug_checkout.submit_error(error_messages);
 				return;
 			}
 
@@ -96,6 +97,25 @@
 		},
 		isPaymentTokenSelected: function () {
 			return 'new' !== $('input[name=wc-payplug-payment-token]:checked').val();
+		},
+		submit_error: function (error_message) {
+			$('.woocommerce-NoticeGroup-checkout, .woocommerce-error, .woocommerce-message').remove();
+			payplug_checkout.$form.prepend('<div class="woocommerce-NoticeGroup woocommerce-NoticeGroup-checkout">' + error_message + '</div>');
+			payplug_checkout.$form.removeClass('processing').unblock();
+			payplug_checkout.$form.find('.input-text, select, input:checkbox').trigger('validate').blur();
+			payplug_checkout.scroll_to_notices();
+			$(document.body).trigger('checkout_error');
+		},
+		scroll_to_notices: function () {
+			var scrollElement = $('.woocommerce-NoticeGroup-updateOrderReview, .woocommerce-NoticeGroup-checkout');
+
+			if (!scrollElement.length) {
+				scrollElement = $('.form.checkout');
+			}
+
+			$('html, body').animate({
+				scrollTop: (scrollElement.offset().top - 100)
+			}, 500);
 		}
 	};
 
