@@ -62,8 +62,10 @@ class PaymentLightboxCest {
 		// Wheck we have the lightbox
 		$I->waitForElementVisible( '#iframe-payplug', 60 );
 		$I->executeJS('jQuery("#iframe-payplug").attr("name", "payplug")');
-
 		$I->switchToIFrame( 'payplug' );
+
+		// Post in database
+		$I->seePostInDatabase( [ 'post_status' => 'wc-pending' ] );
 
 		// Right payment error
 		foreach ( [ 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2 ] as $char ) {
@@ -110,8 +112,10 @@ class PaymentLightboxCest {
 		// Wheck we have the lightbox
 		$I->waitForElementVisible( '#iframe-payplug', 60 );
 		$I->executeJS('jQuery("#iframe-payplug").attr("name", "payplug")');
-
 		$I->switchToIFrame( 'payplug' );
+
+		// Post in database
+		$I->seePostInDatabase( [ 'post_status' => 'wc-pending' ] );
 
 		// Cancel
 		$I->click( '#iframe-payplug-close-link' );
