@@ -38,10 +38,10 @@ class PaymentOneClickCest {
 	 * @param AcceptanceTester $I
 	 */
 	public function testNotConfiguredOneClickDisplayed( AcceptanceTester $I ) {
-		$I->wantToTest('That I cannot check the oneClick if not activated ');
+		$I->wantToTest( 'That I cannot check the oneClick if not activated ' );
 
 		$I->waitForElement( '#place_order' );
-		$I->dontSeeElement('#payment li.woocommerce-SavedPaymentMethods-token');
+		$I->dontSeeElement( '#payment li.woocommerce-SavedPaymentMethods-token' );
 
 		// Fill form
 		$I->fillField( 'billing_first_name', "First Name" );
@@ -61,17 +61,18 @@ class PaymentOneClickCest {
 		$I->waitForText( 'YOUR CARD' );
 		$I->waitForText( 'YOU ARE ON A TEST ENVIRONMENT.' );
 
-		$I->dontSeeElement('.wrap-save-card');
+		$I->dontSeeElement( '.wrap-save-card' );
 	}
 
-	public function testConfiguredOneClick( AcceptanceTester $I ){
-		$I->wantToTest('That I have the checkbox displayed on oneclick ');
+	public function testConfiguredOneClick( AcceptanceTester $I ) {
+		$I->wantToTest( 'That I have the checkbox displayed on oneclick ' );
 
 		// Setup admin on one click
 		$I->loginAsAdmin();
 		$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
 		$I->checkOption( 'woocommerce_payplug_oneclick' );
-		$I->click( '.forminp input[type="submit"]' );
+		$I->click( '#mainform > p.submit > button' );
+		$I->makeScreenshot('adminpage1');
 
 		// Customer tests
 		$I->am( 'Customer' );
@@ -79,7 +80,7 @@ class PaymentOneClickCest {
 
 		// Place an order
 		$I->waitForElement( '#place_order' );
-		$I->dontSeeElement('#payment li.woocommerce-SavedPaymentMethods-token');
+		$I->dontSeeElement( '#payment li.woocommerce-SavedPaymentMethods-token' );
 
 		// Fill form
 		$I->fillField( 'billing_first_name', "First Name" );
@@ -100,6 +101,77 @@ class PaymentOneClickCest {
 		$I->waitForText( 'YOU ARE ON A TEST ENVIRONMENT.' );
 
 		// There is the cechkbox displayed
-		$I->SeeElement('.wrap-save-card');
+		$I->SeeElement( '.wrap-save-card' );
 	}
+
+	public function testConfiguredOneClickWithPaymentCard( AcceptanceTester $I ) {
+		$I->wantToTest( 'That the expired card is available for payment ' );
+
+		// Create fake resource
+		$resource                  = new \StdClass();
+		$resource->card            = new \StdClass();
+		$resource->card->id        = 1;
+		$resource->card->last4     = '3333';
+		$resource->card->exp_year  = '2019';
+		$resource->card->exp_month = '01';
+		$resource->card->brand     = 'mastercard';
+
+		// Create token for the current user
+		$token = new WC_Payment_Token_CC();
+		$token->set_token( wc_clean( $resource->card->id ) );
+		$token->set_gateway_id( 'payplug' );
+		$token->set_last4( wc_clean( $resource->card->last4 ) );
+		$token->set_expiry_year( wc_clean( $resource->card->exp_year ) );
+		$token->set_expiry_month( zeroise( (int) wc_clean( $resource->card->exp_month ), 2 ) );
+		$token->set_card_type( wc_clean( $resource->card->brand ) );
+		$token->set_user_id( 1 );
+		$token->add_meta_data( 'mode', 'test' );
+		$token->save();
+
+		// Refresh page
+		$I->amOnPage( '/' );
+		$I->amOnPage( '/checkout/' );
+
+		// See the element
+		$I->waitForElement( '#place_order' );
+		$I->see( 'Mastercard ending in 3333' );
+
+		// See the card on account
+		$I->amOnPage('/my-account/payment-methods/');
+		$I->see( 'Mastercard ending in 3333' );
+	}
+
+	public function testOneClickCardExpired( AcceptanceTester $I ) {
+		$I->wantToTest( 'That the expired card isnt available for payment ' );
+
+		// Create fake resource
+		$resource                  = new \StdClass();
+		$resource->card            = new \StdClass();
+		$resource->card->id        = 1;
+		$resource->card->last4     = '2222';
+		$resource->card->exp_year  = '2017';
+		$resource->card->exp_month = '01';
+		$resource->card->brand     = 'mastercard';
+
+		// Create token for the current user
+		$token = new WC_Payment_Token_CC();
+		$token->set_token( wc_clean( $resource->card->id ) );
+		$token->set_gateway_id( 'payplug' );
+		$token->set_last4( wc_clean( $resource->card->last4 ) );
+		$token->set_expiry_year( wc_clean( $resource->card->exp_year ) );
+		$token->set_expiry_month( zeroise( (int) wc_clean( $resource->card->exp_month ), 2 ) );
+		$token->set_card_type( wc_clean( $resource->card->brand ) );
+		$token->set_user_id( 1 );
+		$token->add_meta_data( 'mode', 'test' );
+		$token->save();
+
+		// Refresh page
+		$I->amOnPage( '/' );
+		$I->amOnPage( '/checkout/' );
+
+		// See the element
+		$I->waitForElement( '#place_order' );
+		$I->dontSee( 'Mastercard ending in 2222' );
+	}
+
 }
