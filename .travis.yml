@@ -44,7 +44,7 @@ cache:
     - $HOME/.composer/cache
 env:
   global:
-    - WP_CORE_DIR="/tmp/wordpress"
+    - $WP_FOLDER="/tmp/wordpress"
     - WP_URL="http://payplug.localhost"
     - WP_DOMAIN="payplug.localhost"
     - DB_NAME="test"
