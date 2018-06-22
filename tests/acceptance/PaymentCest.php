@@ -15,7 +15,7 @@ class PaymentCest {
 			$I->fillField( 'payplug_email', getenv( 'PAYPLUG_TEST_EMAIL' ) );
 			$I->fillField( 'payplug_password', new PasswordArgument( getenv( 'PAYPLUG_TEST_PASSWORD' ) ) );
 
-			$I->click('.forminp input[type="submit"]');
+			$I->click( '.forminp input[type="submit"]' );
 			$this->setup = true;
 		}
 
@@ -62,7 +62,7 @@ class PaymentCest {
 		$I->fillField( 'billing_phone', "0123456789" );
 
 		// wait ajax done, submit the form
-		$I->wait(1);
+		$I->wait( 1 );
 		$I->waitForElement( '#place_order' );
 		$I->click( '#place_order' );
 
@@ -71,20 +71,33 @@ class PaymentCest {
 		$I->waitForText( 'YOU ARE ON A TEST ENVIRONMENT.' );
 
 		// Right payment error
-		foreach( [4,2,4,2,4,2,4,2,4,2,4,2,4,2,4,2 ] as $char) {
-			$I->pressKey('#paymentCardNumber', $char);
+		foreach ( [ 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2 ] as $char ) {
+			$I->pressKey( '#paymentCardNumber', $char );
 		}
+
+		// Pending Transaction
+		$I->seePostInDatabase( [ 'post_status' => 'wc-pending' ] );
+		$post_id = $I->grabLatestEntryByFromDatabase( 'wp_posts', 'ID' );
+
 
 		$I->fillField( [ 'id' => 'paymentCardExpiration' ], "11/2099" );
 		$I->fillField( [ 'id' => 'paymentCardCvv' ], "123" );
-		$I->wait(1);
+		$I->wait( 1 );
 
 		$I->click( '#payButton' );
 
 		$I->waitForText( 'Order received' );
 		$I->waitForText( 'Thank you. Your order has been received.' );
 
-		$I->seePostInDatabase([ 'post_status' => 'wc-pending' ]);
+		$I->seePostInDatabase( [
+			'ID' => $post_id,
+			'post_status' => 'wc-pending',
+			'post_title'  => '[TEST] #{{last_id}} First Name Last Name',
+			'template_data' => [
+				'last_id' => $post_id,
+			],
+		] );
+
 	}
 
 	/**
@@ -105,9 +118,13 @@ class PaymentCest {
 		$I->fillField( 'billing_phone', "0123456789" );
 
 		// wait ajax done, submit the form
-		$I->wait(1);
+		$I->wait( 1 );
 		$I->waitForElement( '#place_order' );
 		$I->click( '#place_order' );
+
+		// Pending Transaction
+		$I->seePostInDatabase( [ 'post_status' => 'wc-pending' ] );
+		$post_id = $I->grabLatestEntryByFromDatabase( 'wp_posts', 'ID' );
 
 		// Wheck we are on Payplug page
 		$I->waitForText( 'YOUR CARD' );
@@ -118,7 +135,14 @@ class PaymentCest {
 
 		$I->waitForText( 'Your order was cancelled.' );
 
-		$I->seePostInDatabase([ 'post_status' => 'wc-cancelled' ]);
+		$I->seePostInDatabase( [
+			'ID' => $post_id,
+			'post_status' => 'wc-cancelled',
+			'post_title'  => '[TEST] #{{last_id}} First Name Last Name',
+			'template_data' => [
+				'last_id' => $post_id,
+			],
+		] );
 
 	}
 }
