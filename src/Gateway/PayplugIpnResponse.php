@@ -238,7 +238,7 @@ class PayplugIpnResponse {
 	 */
 	protected function maybe_save_card( $resource ) {
 
-		if ( ! $resource->save_card || ! isset( $resource->card ) ) {
+		if ( ! $resource->allow_save_card || ! isset( $resource->card ) ) {
 			return false;
 		}
 

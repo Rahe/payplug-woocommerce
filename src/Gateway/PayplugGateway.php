@@ -297,7 +297,7 @@ class PayplugGateway extends WC_Payment_Gateway_CC {
 		wp_register_script( 'payplug-checkout', PAYPLUG_GATEWAY_PLUGIN_URL . 'assets/js/payplug-checkout.js', [
 			'jquery',
 			'payplug'
-		], PAYPLUG_GATEWAY_VERSION, true );
+		], time(), true );
 		wp_localize_script( 'payplug-checkout', 'payplug_checkout_params', [
 			'ajax_url' => \WC_AJAX::get_endpoint( 'payplug_create_order' ),
 			'nonce'    => [
