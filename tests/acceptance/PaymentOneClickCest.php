@@ -64,4 +64,42 @@ class PaymentOneClickCest {
 		$I->dontSeeElement('.wrap-save-card');
 	}
 
+	public function testConfiguredOneClick( AcceptanceTester $I ){
+		$I->wantToTest('That I have the checkbox displayed on oneclick ');
+
+		// Setup admin on one click
+		$I->loginAsAdmin();
+		$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
+		$I->checkOption( 'woocommerce_payplug_oneclick' );
+		$I->click( '.forminp input[type="submit"]' );
+
+		// Customer tests
+		$I->am( 'Customer' );
+		$I->amOnPage( '/checkout/' );
+
+		// Place an order
+		$I->waitForElement( '#place_order' );
+		$I->dontSeeElement('#payment li.woocommerce-SavedPaymentMethods-token');
+
+		// Fill form
+		$I->fillField( 'billing_first_name', "First Name" );
+		$I->fillField( 'billing_last_name', "Last Name" );
+		$I->fillField( 'billing_address_1', "118 avenenue Jean Jaurès" );
+		$I->fillField( 'billing_city', "Paris" );
+		$I->fillField( 'billing_postcode', "75019" );
+		$I->fillField( 'billing_email', "test@payplug.localhost" );
+		$I->fillField( 'billing_phone', "0123456789" );
+
+		// wait ajax done, submit the form
+		$I->wait( 1 );
+		$I->waitForElement( '#place_order' );
+		$I->click( '#place_order' );
+
+		// Wheck we are on Payplug page
+		$I->waitForText( 'YOUR CARD' );
+		$I->waitForText( 'YOU ARE ON A TEST ENVIRONMENT.' );
+
+		// There is the cechkbox displayed
+		$I->SeeElement('.wrap-save-card');
+	}
 }
