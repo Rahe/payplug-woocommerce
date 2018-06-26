@@ -22,3 +22,11 @@ tooling:
       service: appserver
       cmd: composer test-acceptance
       description: Run our acceptance tests
+  test-wpunit-all:
+      service: appserver
+      cmd: composer test-wpunit-all
+      description: Run all the wpunit tests
+  test-acceptance-all:
+      service: appserver
+      cmd: composer test-acceptance-all
+      description: Run all the acceptance tests

@@ -72,7 +72,6 @@ class PaymentOneClickCest {
 		$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
 		$I->checkOption( 'woocommerce_payplug_oneclick' );
 		$I->click( '#mainform > p.submit > button' );
-		$I->makeScreenshot('adminpage1');
 
 		// Customer tests
 		$I->am( 'Customer' );
