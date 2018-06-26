@@ -76,9 +76,8 @@ class PaymentCest {
 		}
 
 		// Pending Transaction
-		$I->seePostInDatabase( [ 'post_status' => 'wc-pending' ] );
+		$I->seePostInDatabase( [ 'post_status' => 'wc-pending', 'post_type' => 'shop_order' ] );
 		$post_id = $I->grabLatestEntryByFromDatabase( 'wp_posts', 'ID' );
-
 
 		$I->fillField( [ 'id' => 'paymentCardExpiration' ], "11/2099" );
 		$I->fillField( [ 'id' => 'paymentCardCvv' ], "123" );
@@ -90,14 +89,10 @@ class PaymentCest {
 		$I->waitForText( 'Thank you. Your order has been received.' );
 
 		$I->seePostInDatabase( [
-			'ID' => $post_id,
-			'post_status' => 'wc-pending',
-			'post_title'  => '[TEST] #{{last_id}} First Name Last Name',
-			'template_data' => [
-				'last_id' => $post_id,
-			],
+			'ID'          => $post_id,
+			'post_status' => 'wc-processing',
+			'post_type'   => 'shop_order',
 		] );
-
 	}
 
 	/**
@@ -122,8 +117,11 @@ class PaymentCest {
 		$I->waitForElement( '#place_order' );
 		$I->click( '#place_order' );
 
+		// Wait for Database modified
+		$I->wait( 1 );
+
 		// Pending Transaction
-		$I->seePostInDatabase( [ 'post_status' => 'wc-pending' ] );
+		$I->seePostInDatabase( [ 'post_status' => 'wc-pending', 'post_type' => 'shop_order', ] );
 		$post_id = $I->grabLatestEntryByFromDatabase( 'wp_posts', 'ID' );
 
 		// Wheck we are on Payplug page
@@ -136,12 +134,9 @@ class PaymentCest {
 		$I->waitForText( 'Your order was cancelled.' );
 
 		$I->seePostInDatabase( [
-			'ID' => $post_id,
+			'ID'          => $post_id,
 			'post_status' => 'wc-cancelled',
-			'post_title'  => '[TEST] #{{last_id}} First Name Last Name',
-			'template_data' => [
-				'last_id' => $post_id,
-			],
+			'post_type'   => 'shop_order',
 		] );
 
 	}
