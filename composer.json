@@ -15,8 +15,9 @@
     ],
     "config": {
         "platform": {
-            "php": ">=5.6.0"
-        }
+            "php": "5.6.0"
+        },
+        "process-timeout": 3600
     },
     "require": {
         "php": ">=5.6.0",
@@ -31,6 +32,9 @@
     "scripts": {
         "test-wpunit" : "vendor/bin/codecept run wpunit",
         "test-acceptance" : "vendor/bin/codecept run acceptance",
+
+        "test-wpunit-all" : "vendor/bin/codecept run wpunit",
+        "test-acceptance-all" : "vendor/bin/codecept run acceptance AdminConfiguredCest --no-exit && vendor/bin/codecept run acceptance AdminNotConfiguredCest --no-exit && vendor/bin/codecept run acceptance PaymentCest --no-exit && vendor/bin/codecept run acceptance PaymentLightboxCest --no-exit && vendor/bin/codecept run acceptance PaymentOneClickCest --no-exit && vendor/bin/codecept run acceptance RefundCest --no-exit",
 
         "post-install-cmd": [
             "PhantomInstaller\\Installer::installPhantomJS"
