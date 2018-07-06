@@ -3,6 +3,18 @@ recipe: wordpress
 config:
   webroot: wordpress
   php: 7.2
+services:
+  appserver:
+    overrides:
+     services:
+      privileged: true
+    run_as_root:
+      - "apt-get update -y"
+      - "apt-get install gnupg2 ca-certificates p11-kit chromedriver -y"
+      - "wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -"
+      - 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list'
+      - 'apt-get update -y'
+      - "apt-get install google-chrome-stable -y"
 proxy:
   appserver:
     - payplug.localhost
@@ -11,9 +23,9 @@ tooling:
   setup-tests:
     service: appserver
     cmd: "bin/setup-lando.sh"
-  launch-phantom:
+  launch-chromedriver:
     service: appserver
-    cmd: 'vendor/bin/phantomjs --webdriver=4444 --ssl-protocol=any --ignore-ssl-errors=true >/dev/null 2>&1 &'
+    cmd: 'chromedriver --url-base=/wd/hub --ignore-certificate-errors --reduce-security-for-testing >/dev/null 2>&1 &'
   test-wpunit:
       service: appserver
       cmd: composer test-wpunit
