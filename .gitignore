@@ -31,5 +31,14 @@ node_modules
 # Vendor
 vendor
 
+# Tests
+/wordpress/
+codeception.yml
+tests/acceptance.suite.yml
+tests/functional.suite.yml
+tests/unit.suite.yml
+tests/wpunit.suite.yml
+.env
+
 # Temporary files
 *~
