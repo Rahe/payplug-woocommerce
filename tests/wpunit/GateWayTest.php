@@ -20,25 +20,25 @@ class GateWayTest extends \Codeception\TestCase\WPTestCase {
 	public function testGetUserApiKeysMissingEmail() {
 		$gateway = new \Payplug\PayplugWoocommerce\Gateway\PayplugGateway();
 
-		$this->assertWPError( $gateway->get_user_api_keys( '', 'ele' ), 'LOl' );
+		$this->assertWPError( $gateway->retrieve_user_api_keys( '', 'ele' ), 'LOl' );
 	}
 
 	public function testGetUserApiKeysMissingPassWord() {
 		$gateway = new \Payplug\PayplugWoocommerce\Gateway\PayplugGateway();
 
-		$this->assertWPError( $gateway->get_user_api_keys( 'ele', '' ) );
+		$this->assertWPError( $gateway->retrieve_user_api_keys( 'ele', '' ) );
 	}
 
 	public function testGetUserApiKeysMissingPassWordAndEmail() {
 		$gateway = new \Payplug\PayplugWoocommerce\Gateway\PayplugGateway();
 
-		$this->assertWPError( $gateway->get_user_api_keys( '', '' ) );
+		$this->assertWPError( $gateway->retrieve_user_api_keys( '', '' ) );
 	}
 
 	public function testGetUserApiKeysInvalidCredentials() {
 		$gateway = new \Payplug\PayplugWoocommerce\Gateway\PayplugGateway();
 
-		$this->assertWPError( $gateway->get_user_api_keys( 'not', 'right' ) );
+		$this->assertWPError( $gateway->retrieve_user_api_keys( 'not', 'right' ) );
 	}
 
 	public function testLimitStringLengthDefault() {
@@ -74,7 +74,7 @@ class GateWayTest extends \Codeception\TestCase\WPTestCase {
 	public function testValidateOrderAmountInRange() {
 		$gateway = new \Payplug\PayplugWoocommerce\Gateway\PayplugGateway();
 
-		$this->assertEquals( 100, $gateway->validate_order_amount( 100 ) );
+		$this->assertEquals( 99, $gateway->validate_order_amount( 99 ) );
 		$this->assertEquals( 2000000, $gateway->validate_order_amount( 2000000 ) );
 		$this->assertEquals( 500, $gateway->validate_order_amount( 500 ) );
 	}
