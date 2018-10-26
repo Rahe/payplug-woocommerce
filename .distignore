@@ -7,6 +7,7 @@
 .gitlab-ci.yml
 .travis.yml
 .DS_Store
+.lando.yml
 Thumbs.db
 behat.yml
 bin
@@ -21,6 +22,8 @@ phpunit.xml.dist
 multisite.xml
 multisite.xml.dist
 phpcs.xml
+codeception.dist.yml
+codeception.yml
 phpcs.xml.dist
 README.md
 wp-cli.local.yml
