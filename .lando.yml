@@ -5,6 +5,9 @@ config:
   php: 7.2
 services:
   appserver:
+    overrides:
+      services:
+        privileged: true
     run_as_root:
     - "apt-get update -y"
     - "apt-get install gnupg2 ca-certificates p11-kit chromedriver -y"
