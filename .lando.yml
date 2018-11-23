@@ -50,4 +50,13 @@ tooling:
 events:
   # Run some commands after `lando start`
   post-start:
-  - cd $LANDO_MOUNT && composer install
+    - cd $LANDO_MOUNT && composer install
+  pre-test:
+    - echo "Copy files in case of editions"
+    - cd $LANDO_MOUNT && ./bin/tests-copy.sh
+  pre-test-wpunit:
+  - echo "Copy files in case of editions"
+  - cd $LANDO_MOUNT && ./bin/tests-copy.sh
+  pre-test-acceptance:
+  - echo "Copy files in case of editions"
+  - cd $LANDO_MOUNT && ./bin/tests-copy.sh
