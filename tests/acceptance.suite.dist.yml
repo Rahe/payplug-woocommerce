@@ -37,41 +37,53 @@ modules:
       url: '%WP_URL%'
       urlReplacement: false #replace the hardcoded dump URL with the one above
       tablePrefix: '%TABLE_PREFIX%'
-    WPBrowser:
-      url: '%WP_URL%'
-      adminUsername: '%ADMIN_USERNAME%'
-      adminPassword: '%ADMIN_PASSWORD%'
-      adminPath: '%WP_ADMIN_PATH%'
     WPWebDriver:
       url: '%WP_URL%'
       adminUsername: '%ADMIN_USERNAME%'
       adminPassword: '%ADMIN_PASSWORD%'
       adminPath: '%WP_ADMIN_PATH%'
-      host: '%BROWSERSTACK_USER%:%BROWSERSTACK_KEY%@hub-cloud.browserstack.com'
+      host: 'hub-cloud.browserstack.com'
       port: 80
       browser: chrome
       capabilities:
+        browserstack.user: '%BROWSERSTACK_USERNAME_REAL%'
+        browserstack.key: '%BROWSERSTACK_KEY%'
         browserstack.local: true # Enable de the browsetStack local
         browserstack.debug: true # Debug and capture videos/screenshots
         acceptSslCerts: true
         project: 'payplug-woocommerce'
-        build: 'payplug-%TRAVIS_BUILD_NUMBER%'
+        build: 'payplug-woocommerce-%TRAVIS_BUILD_NUMBER%'
 
-# Differents environements for the acceptance testing in browserStack
 env:
+  # Local basic
   local:
     modules:
       config:
         WPWebDriver:
-          port: 9515
+          port: 4444
           window_size: false
           browser: chrome
-          host: '127.0.0.1'
+          host: 'chromedriver'
           capabilities:
             browserstack.local: false
             browserstack.debug: false
             chromeOptions:
               args: [ "--headless", "--disable-gpu", '--ignore-certificate-errors', '--reduce-security-for-testing', '--enable-features=NetworkService', '--window-size=1920,1920' ]
+  # Mobile Nexus 5
+  local-mobile:
+    modules:
+      config:
+        WPWebDriver:
+          port: 4444
+          window_size: false
+          browser: chrome
+          host: 'chromedriver'
+          capabilities:
+            browserstack.local: false
+            browserstack.debug: false
+            chromeOptions:
+              args: [ "--headless", "--disable-gpu", '--ignore-certificate-errors', '--reduce-security-for-testing', '--enable-features=NetworkService', '--mobileEmulation={ "deviceName" => "Nexus 5" }' ]
+  # Envs for BrowserStack
   desktop:
     modules:
       config:
@@ -86,7 +98,6 @@ env:
         WPWebDriver:
           browser: 'chrome'
           capabilities:
-            os_version: 10.3
             device: "iPhone 7"
             real_mobile: true
   mobile_android:
@@ -95,6 +106,5 @@ env:
         WPWebDriver:
           browser: 'chrome'
           capabilities:
-            os_version: 7.0
             device: "Google Pixel"
             real_mobile: true
