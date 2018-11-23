@@ -121,7 +121,7 @@ class PaymentOneClickCest {
 		$resource->card            = new \StdClass();
 		$resource->card->id        = 1;
 		$resource->card->last4     = '3333';
-		$resource->card->exp_year  = '2019';
+		$resource->card->exp_year  = '2099';
 		$resource->card->exp_month = '01';
 		$resource->card->brand     = 'mastercard';
 		$gateway                   = WC()->payment_gateways()->payment_gateways()['payplug'];
@@ -158,15 +158,18 @@ class PaymentOneClickCest {
 	public function testOneClickCardExpired( AcceptanceTester $I ) {
 		$I->wantToTest( 'That the expired card isnt available for payment ' );
 
-		// Create fake resource
+		$gateway                   = WC()->payment_gateways()->payment_gateways()['payplug'];
+
+		/**
+		 * Expired card.
+		 */
 		$resource                  = new \StdClass();
 		$resource->card            = new \StdClass();
-		$resource->card->id        = 1;
+		$resource->card->id        = 2;
 		$resource->card->last4     = '2222';
 		$resource->card->exp_year  = '2017';
 		$resource->card->exp_month = '01';
 		$resource->card->brand     = 'mastercard';
-		$gateway                   = WC()->payment_gateways()->payment_gateways()['payplug'];
 
 		// Create token for the current user
 		$token = new \WC_Payment_Token_CC();
@@ -178,8 +181,105 @@ class PaymentOneClickCest {
 		$token->set_card_type( wc_clean( $resource->card->brand ) );
 		$token->set_user_id( 1 );
 		$token->add_meta_data( 'mode', 'test' );
+		$token->add_meta_data( 'payplug_account', \wc_clean( $gateway->get_merchant_id() ), true );
+
+		$token->save();
+
+		/**
+		 * Expired card for current year, previous month.
+		 */
+		$resource                  = new \StdClass();
+		$resource->card            = new \StdClass();
+		$resource->card->id        = 3;
+		$resource->card->last4     = '3333';
+		$resource->card->exp_year  = date( 'Y' );
+		$resource->card->exp_month = date( 'm', strtotime( 'previous month' ) );
+		$resource->card->brand     = 'mastercard';
+
+		// Create token for the current user
+		$token = new \WC_Payment_Token_CC();
+		$token->set_token( wc_clean( $resource->card->id ) );
+		$token->set_gateway_id( 'payplug' );
+		$token->set_last4( wc_clean( $resource->card->last4 ) );
+		$token->set_expiry_year( wc_clean( $resource->card->exp_year ) );
+		$token->set_expiry_month( zeroise( (int) wc_clean( $resource->card->exp_month ), 2 ) );
+		$token->set_card_type( wc_clean( $resource->card->brand ) );
+		$token->set_user_id( 1 );
 		$token->add_meta_data( 'mode', 'test' );
 		$token->add_meta_data( 'payplug_account', \wc_clean( $gateway->get_merchant_id() ), true );
+
+		$token->save();
+
+		/**
+		 * Expired card for current year, current month.
+		 */
+		$resource                  = new \StdClass();
+		$resource->card            = new \StdClass();
+		$resource->card->id        = 4;
+		$resource->card->last4     = '4444';
+		$resource->card->exp_year  = date( 'Y' );
+		$resource->card->exp_month = date( 'm' );
+		$resource->card->brand     = 'mastercard';
+
+		// Create token for the current user
+		$token = new \WC_Payment_Token_CC();
+		$token->set_token( wc_clean( $resource->card->id ) );
+		$token->set_gateway_id( 'payplug' );
+		$token->set_last4( wc_clean( $resource->card->last4 ) );
+		$token->set_expiry_year( wc_clean( $resource->card->exp_year ) );
+		$token->set_expiry_month( zeroise( (int) wc_clean( $resource->card->exp_month ), 2 ) );
+		$token->set_card_type( wc_clean( $resource->card->brand ) );
+		$token->set_user_id( 1 );
+		$token->add_meta_data( 'mode', 'test' );
+		$token->add_meta_data( 'payplug_account', \wc_clean( $gateway->get_merchant_id() ), true );
+
+		$token->save();
+
+		/**
+		 * Other Merchant ID.
+		 */
+		$resource                  = new \StdClass();
+		$resource->card            = new \StdClass();
+		$resource->card->id        = 5;
+		$resource->card->last4     = '5555';
+		$resource->card->exp_year  = date( 'Y' );
+		$resource->card->exp_month = date( 'm' );
+		$resource->card->brand     = 'mastercard';
+
+		// Create token for the current user
+		$token = new \WC_Payment_Token_CC();
+		$token->set_token( wc_clean( $resource->card->id ) );
+		$token->set_gateway_id( 'payplug' );
+		$token->set_last4( wc_clean( $resource->card->last4 ) );
+		$token->set_expiry_year( wc_clean( $resource->card->exp_year ) );
+		$token->set_expiry_month( zeroise( (int) wc_clean( $resource->card->exp_month ), 2 ) );
+		$token->set_card_type( wc_clean( $resource->card->brand ) );
+		$token->set_user_id( 1 );
+		$token->add_meta_data( 'mode', 'test' );
+		$token->add_meta_data( 'payplug_account', 'other_merchant_id', true );
+
+		$token->save();
+
+		/**
+		 * Not payplug gateway.
+		 */
+		$resource                  = new \StdClass();
+		$resource->card            = new \StdClass();
+		$resource->card->id        = 6;
+		$resource->card->last4     = '6666';
+		$resource->card->exp_year  = '2099';
+		$resource->card->exp_month = '01';
+		$resource->card->brand     = 'mastercard';
+
+		// Create token for the current user
+		$token = new \WC_Payment_Token_CC();
+		$token->set_token( wc_clean( $resource->card->id ) );
+		$token->set_gateway_id( 'other_gateway' );
+		$token->set_last4( wc_clean( $resource->card->last4 ) );
+		$token->set_expiry_year( wc_clean( $resource->card->exp_year ) );
+		$token->set_expiry_month( zeroise( (int) wc_clean( $resource->card->exp_month ), 2 ) );
+		$token->set_card_type( wc_clean( $resource->card->brand ) );
+		$token->set_user_id( 1 );
 
 		$token->save();
 
@@ -192,7 +292,14 @@ class PaymentOneClickCest {
 		// See the element
 		$I->wait( 2 );
 		$I->waitForElement( '#place_order' );
-		$I->dontSee( 'Mastercard ending in 2222' );
-	}
 
+		/*
+		 * All of theses card shouldn't be displayed.
+		 */
+		$I->dontSee( 'Mastercard ending in 2222' );
+		$I->dontSee( 'Mastercard ending in 3333' );
+		$I->dontSee( 'Mastercard ending in 4444' );
+		$I->dontSee( 'Mastercard ending in 5555' );
+		$I->dontSee( 'Mastercard ending in 6666' );
+	}
 }
