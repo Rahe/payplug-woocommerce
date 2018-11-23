@@ -45,10 +45,9 @@
         "coding-style": [
             "./vendor/bin/phpcbf --standard=phpcs.xml.dist ./ --extensions=php -p"
         ],
+        "test" : "vendor/bin/codecept run wpunit && vendor/bin/codecept run acceptance --env local --fail-fast",
         "test-wpunit" : "vendor/bin/codecept run wpunit",
-        "test-acceptance" : "vendor/bin/codecept run acceptance --debug --env=local --fail-fast",
-
-        "test-wpunit-all" : "vendor/bin/codecept run wpunit",
-        "test-acceptance-all" : "vendor/bin/codecept run acceptance AdminConfiguredCest --no-exit && vendor/bin/codecept run acceptance AdminNotConfiguredCest --no-exit && vendor/bin/codecept run acceptance PaymentCest --no-exit && vendor/bin/codecept run acceptance PaymentLightboxCest --no-exit && vendor/bin/codecept run acceptance PaymentOneClickCest --no-exit && vendor/bin/codecept run acceptance RefundCest --no-exit"
+        "test-acceptance" : "vendor/bin/codecept run acceptance --env local",
+        "test-acceptance-browserstack" : "vendor/bin/codecept run acceptance --no-exit --env desktop"
     }
 }
