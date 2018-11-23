@@ -29,8 +29,6 @@ class ClassicCest {
 	public function checkNotLogged( AcceptanceTester $I ) {
 		$I->wantToTest( 'I have messages to configure the plugin' );
 
-		$I->loginAsAdmin();
-
 		$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
 
 		$I->expect( 'That i\'m not logged to my payplug account.' );
@@ -64,7 +62,7 @@ class ClassicCest {
 	 * @param AcceptanceTester $I
 	 *
 	 */
-	public function checkLoginSuccess( AcceptanceTester $I ) {
+	public function checkLoginSuccessWithTestAccount( AcceptanceTester $I ) {
 		$I->wantToTest( 'I have login success message' );
 
 		$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
