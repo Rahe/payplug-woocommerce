@@ -52,7 +52,7 @@ class RefundCest {
 		$I->click( '#place_order' );
 
 		// Wheck we are on Payplug page
-		$I->waitForText( 'YOUR CARD',30 );
+		$I->waitForText( 'YOUR CARD', 30 );
 		$I->waitForText( 'YOU ARE ON A TEST ENVIRONMENT.' );
 
 		// Right payment error
@@ -95,7 +95,8 @@ class RefundCest {
 
 		// Fill with the current value
 		$I->waitForElementVisible( "#refund_amount" );
-		$I->fillField( 'refund_amount', (int) number_format( $order->get_total(), wc_get_price_decimals(), wc_get_price_decimal_separator(), wc_get_price_thousand_separator() ) );
+		$amount = (int) number_format( $order->get_total(), wc_get_price_decimals(), wc_get_price_decimal_separator(), wc_get_price_thousand_separator() );
+		$I->fillField( 'refund_amount', $amount );
 
 		# Wait for the refund
 		$I->waitForElement( ".refund-actions" );
@@ -106,6 +107,75 @@ class RefundCest {
 
 		$I->waitForElementVisible( 'tr.refund ', 60 );
 		$I->makeScreenshot( 'testRefundTotalNoteend' );
+
+
+		/**
+		 * Check line added
+		 */
+		$refunds = $order->get_refunds();
+		$refund  = $refunds[0];
+
+		$I->canSee( sprintf( 'Refund #%s', $refund->get_id() ) );
+
+		/**
+		 * Check status modified
+		 */
+		$I->seePostInDatabase( [
+			'ID'          => $this->order_id,
+			'post_status' => 'wc-refunded',
+			'post_type'   => 'shop_order',
+		] );
+
+		$I->canSee( sprintf( 'Refund %s', $amount ) );
 	}
 
+	/**
+	 * @param AcceptanceTester $I
+	 *
+	 * @before setup_order
+	 */
+	public function testRefundPartialNote( AcceptanceTester $I ) {
+		$I->wantToTest( 'Total Refund and note displayed' );
+
+		$order = wc_get_order( $this->order_id );
+		$status = $order->get_status();
+		$I->loginAsAdmin();
+		$I->amOnUrl( get_edit_post_link( $this->order_id ) );
+
+		// Show the controls
+		$I->click( 'button.refund-items' );
+
+		// Fill with the current value
+		$I->waitForElementVisible( "#refund_amount" );
+		$amount = (int) number_format( $order->get_total() - 1, wc_get_price_decimals(), wc_get_price_decimal_separator(), wc_get_price_thousand_separator() );
+		$I->fillField( 'refund_amount', $amount );
+
+		# Wait for the refund
+		$I->waitForElement( ".refund-actions" );
+		$I->click( '.do-api-refund' );
+		$I->acceptPopup();
+
+		$I->wait( 3 );
+
+		$I->waitForElementVisible( 'tr.refund ', 60 );
+		$I->makeScreenshot( 'testRefundTotalNoteend' );
+
+
+		/**
+		 * Check line added
+		 */
+		$refunds = $order->get_refunds();
+		$refund  = $refunds[0];
+
+		/**
+		 * Check status not modified
+		 */
+		$I->seePostInDatabase( [
+			'ID'          => $this->order_id,
+			'post_status' => $status,
+			'post_type'   => 'shop_order',
+		] );
+
+		$I->canSee( sprintf( 'Refund #%s', $refund->get_id() ) );
+	}
 }
