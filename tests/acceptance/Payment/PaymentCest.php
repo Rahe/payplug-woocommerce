@@ -40,6 +40,10 @@ class PaymentCest {
 	 * @param AcceptanceTester $I
 	 */
 	public function testNotConfiguredCheckoutMessage( AcceptanceTester $I ) {
+		/**
+		 * TODO :
+		 *  - Shop is live, nothing appears
+		 */
 		$I->wantToTest( 'In DEV mode, checkout displays message' );
 
 		$I->expect( 'That a message for the TEST MODE is displayed on checkout page.' );
@@ -70,6 +74,11 @@ class PaymentCest {
 		$I->waitForElement( '#place_order' );
 		$I->click( '#place_order' );
 
+
+		// Pending Transaction
+		$I->seePostInDatabase( [ 'post_status' => 'wc-pending', 'post_type' => 'shop_order' ] );
+		$post_id = $I->grabLatestEntryByFromDatabase( 'wp_posts', 'ID' );
+
 		// Wheck we are on Payplug page
 		$I->waitForText( 'YOUR CARD' );
 		$I->waitForText( 'YOU ARE ON A TEST ENVIRONMENT.' );
@@ -78,10 +87,6 @@ class PaymentCest {
 		foreach ( [ 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2, 4, 2 ] as $char ) {
 			$I->pressKey( '#paymentCardNumber', $char );
 		}
-
-		// Pending Transaction
-		$I->seePostInDatabase( [ 'post_status' => 'wc-pending', 'post_type' => 'shop_order' ] );
-		$post_id = $I->grabLatestEntryByFromDatabase( 'wp_posts', 'ID' );
 
 		$I->fillField( [ 'id' => 'paymentCardExpiration' ], "11/2099" );
 		$I->fillField( [ 'id' => 'paymentCardCvv' ], "123" );
