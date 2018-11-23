@@ -30,7 +30,7 @@ class HelpersTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function testMinimumPaymentAmount() {
-		$this->assertEquals( Payplug\PayplugWoocommerce\PayplugWoocommerceHelper::get_minimum_amount(), 100 );
+		$this->assertEquals( Payplug\PayplugWoocommerce\PayplugWoocommerceHelper::get_minimum_amount(), 99 );
 
 	}
 
