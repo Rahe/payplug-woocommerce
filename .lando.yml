@@ -2,31 +2,38 @@ name: payplug
 recipe: wordpress
 config:
   webroot: wordpress
-  php: 7.2
+  php: '7.0'
 services:
+  chromedriver:
+    type: compose
+    services:
+      image: robcherry/docker-chromedriver:latest
+      expose:
+      - "4444"
+      environment:
+        CHROMEDRIVER_WHITELISTED_IPS: ""
+        CHROMEDRIVER_URL_BASE: "/wd/hub"
+        CHROMEDRIVER_EXTRA_ARGS: "--ignore-certificate-errors --reduce-security-for-testing --enable-features=NetworkService"
+      security_opt:
+      - seccomp:unconfined
+      command: ["/usr/local/bin/supervisord", "-c", "/etc/supervisord.conf"]
+
   appserver:
-    overrides:
-      services:
-        privileged: true
     run_as_root:
-    - "apt-get update -y"
-    - "apt-get install gnupg2 ca-certificates p11-kit chromedriver -y"
-    - "wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -"
-    - 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google-chrome.list'
-    - 'apt-get update -y'
-    - "apt-get install google-chrome-stable -y"
-  database:
-    run:
-    - "mysql -u root -e 'CREATE DATABASE IF NOT EXISTS wpTests;'"
-    - "mysql -u root -e 'GRANT ALL PRIVILEGES ON *.* TO 'wordpress';'"
-    - "mysql -u root -e 'FLUSH PRIVILEGES;'"
+    - "cd /usr/local/bin && wget https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip && unzip -o BrowserStackLocal-linux-x64.zip && chmod +x BrowserStackLocal && rm BrowserStackLocal-linux-x64.zip"
+    - "mysql -u root -h database -e 'CREATE DATABASE IF NOT EXISTS wpTests;'"
+    - "mysql -u root -h database -e 'GRANT ALL PRIVILEGES ON *.* TO 'wordpress';'"
+    - "mysql -u root -h database -e 'FLUSH PRIVILEGES;'"
 tooling:
-  setup-tests:
+  # Browserstack for local/travis
+  launch-browserstack:
     service: appserver
-    cmd: "bin/setup-lando.sh"
-  launch-chromedriver:
+    cmd: ./bin/lando-browserstack.sh
+  # Test commands
+  test:
     service: appserver
-    cmd: 'chromedriver --url-base=/wd/hub --headless --ignore-certificate-errors --reduce-security-for-testing --enable-features=NetworkService >/dev/null 2>&1 &'
+    cmd: composer test
+    description: Run all tests, acceptance and unit
   test-wpunit:
     service: appserver
     cmd: composer test-wpunit
@@ -35,16 +42,12 @@ tooling:
     service: appserver
     cmd: composer test-acceptance
     description: Run our acceptance tests
-  test-wpunit-all:
+  test-acceptance-browserstack:
     service: appserver
-    cmd: composer test-wpunit-all
-    description: Run all the wpunit tests
-  test-acceptance-all:
-    service: appserver
-    cmd: composer test-acceptance-all
-    description: Run all the acceptance tests
+    cmd: composer test-acceptance-browserstack
+    description: Run our acceptance tests on browserstack
 
 events:
   # Run some commands after `lando start`
   post-start:
-  - echo 'Everything installed, do not forget to launch "lando launch-chromedriver" and "lando setup-tests"'
+  - cd $LANDO_MOUNT && composer install
