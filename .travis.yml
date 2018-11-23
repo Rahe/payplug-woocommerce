@@ -5,146 +5,55 @@ language: php
 notifications:
   email: false
 
-services:
-- mysql
+php:
+- '5.6'
+- '7.0'
+- '7.1'
+- '7.2'
 
-addons:
-  browserstack:
-    username: $BROWSERSTACK_USER
-    access_key:
-      secure: "CWH7/TpwC6pmeMa6xD5p27yEdXfd39fGqpTBfyfn8sl9HF1pCjkgvdeNQcU+aqF89UlKbHY+32o6X+SOROyqYhsQMWR2ufXTS+3r7LnAhPwRueailgjVFV98u/1rKXVxbgxOuakjB7Cyihyr3zzVbSIxcfdLHrMIOSwHVecD6mXCTTSvcalcDC++ectDW7qPtcB405LEQmBPNdKX60iJcGBF9YyEkxGqisH9oRegCklUE8/blaRuNKtihaUIiS5geKQ0GLnE6dFnsTMzvlJ8ICUHs0e/q8Yv+fciIDNgGr7OOKw8Wbaz8AJU+Oa33J9V6o2zZgoBRPQYz41oqEwsM5c0jCHsKxxovHcsdng76uc62Z0nBs39N75eJebQc96RqKtCo0bjQnMhYCMwKQZfkbuHwTrUPy+Bhf71tyC7mC/ibqgx49Ha9WvJCTdCJREo4uJJOJgG23/Polf36/SU6wC51IiETjCBs0vaz1U2+k+tnMx77GW6xs22oa4BGZo9P36EIgV/LVxN983ZNJILYgbVA2igI0OLjSTDTn/jMrcj/AKjX/jxALA5CBQiIFov79EeOto+s7WeprkTxt9qwy35mlKwk029QrOa+Vb8SlvpAp32/waB3lMPvTtpnpdcY+ICh2ITUUEuN4Ny2HViwupQFlbu9wc3f5axzubq9sU="
-    forcelocal: true
-    only: payplug.localhost,443,1,payplug.localhost,80,1,payplug.localhost,8080,1
-  apt:
-    packages:
-    # required by WordPress
-    - php5-fpm
-    - php5-mysql
-    - libjpeg-dev
-    - libjpeg-dev
-    - libpng12-dev
-    - nginx
-  hosts:
-  - payplug.localhost
+services:
+- docker
+
 cache:
   apt: true
   directories:
   - vendor
   - $HOME/.composer/cache/files
 
-# Test main supported versions of PHP against latest WP. 5.2 is min supported PHP version.
-php:
-#- 5.6
-#- 7.0
-#- 7.1
-- 7.2
-
-cache:
-  directories:
-  - $HOME/.composer/cache
+addons:
+  browserstack:
+    username: "johannalucie1"
+    access_key:
+      secure: "CWH7/TpwC6pmeMa6xD5p27yEdXfd39fGqpTBfyfn8sl9HF1pCjkgvdeNQcU+aqF89UlKbHY+32o6X+SOROyqYhsQMWR2ufXTS+3r7LnAhPwRueailgjVFV98u/1rKXVxbgxOuakjB7Cyihyr3zzVbSIxcfdLHrMIOSwHVecD6mXCTTSvcalcDC++ectDW7qPtcB405LEQmBPNdKX60iJcGBF9YyEkxGqisH9oRegCklUE8/blaRuNKtihaUIiS5geKQ0GLnE6dFnsTMzvlJ8ICUHs0e/q8Yv+fciIDNgGr7OOKw8Wbaz8AJU+Oa33J9V6o2zZgoBRPQYz41oqEwsM5c0jCHsKxxovHcsdng76uc62Z0nBs39N75eJebQc96RqKtCo0bjQnMhYCMwKQZfkbuHwTrUPy+Bhf71tyC7mC/ibqgx49Ha9WvJCTdCJREo4uJJOJgG23/Polf36/SU6wC51IiETjCBs0vaz1U2+k+tnMx77GW6xs22oa4BGZo9P36EIgV/LVxN983ZNJILYgbVA2igI0OLjSTDTn/jMrcj/AKjX/jxALA5CBQiIFov79EeOto+s7WeprkTxt9qwy35mlKwk029QrOa+Vb8SlvpAp32/waB3lMPvTtpnpdcY+ICh2ITUUEuN4Ny2HViwupQFlbu9wc3f5axzubq9sU="
+    forcelocal: true
 env:
   global:
-  - $WP_FOLDER="/tmp/wordpress"
-  - WP_URL="http://payplug.localhost"
-  - WP_DOMAIN="payplug.localhost"
-  - DB_NAME="test"
+  - WP_FOLDER="/wordpress"
+  - WP_URL="http://payplug.lndo.site"
+  - WP_DOMAIN="payplug.lndo.site"
+  - DB_NAME="wordpress"
   - TEST_DB_NAME="wpTests"
   - WP_TABLE_PREFIX="wp_"
   - WP_ADMIN_USERNAME="admin"
   - WP_ADMIN_PASSWORD="admin"
   matrix:
-  # WC 2.6.14
   - WP_VERSION=latest WC_VERSION=2.6.14
-  #- WP_VERSION=4.8.6  WC_VERSION=2.6.14
-  #- WP_VERSION=4.7.10 WC_VERSION=2.6.14
-  #- WP_VERSION=4.6.11 WC_VERSION=2.6.14
-  #- WP_VERSION=4.5.14 WC_VERSION=2.6.14
-  #- WP_VERSION=4.4.15 WC_VERSION=2.6.14
-
-  # WC 3.3.5
-  #- WP_VERSION=latest WC_VERSION=3.3.5
-  #- WP_VERSION=4.7.10 WC_VERSION=3.3.5
-  #- WP_VERSION=4.8.6 WC_VERSION=3.3.5
+  - WP_VERSION=nightly WC_VERSION=2.6.14
+  - WP_VERSION=4.8.6 WC_VERSION=2.6.14
+  - WP_VERSION=4.7.10 WC_VERSION=2.6.14
+  - WP_VERSION=4.6.11 WC_VERSION=2.6.14
+  - WP_VERSION=4.5.14 WC_VERSION=2.6.14
+  - WP_VERSION=4.4.15 WC_VERSION=2.6.14
 
 before_install:
-# create the databases that will be used in the tests
-- mysql -e "create database IF NOT EXISTS $DB_NAME;" -uroot
-- mysql -e "create database IF NOT EXISTS $TEST_DB_NAME;" -uroot
-# set up folders
-- mkdir -p $WP_FOLDER
-- mkdir tools
-# install wp-cli in the `tools` folder
-- wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -P $(pwd)/tools/
-- chmod +x tools/wp-cli.phar && mv tools/wp-cli.phar tools/wp
-# append the `tools` folder to the PATH
-- export PATH=$PATH:$(pwd)/tools
-# prepend the `vendor/bin` folder the PATH
-- export PATH=vendor/bin:$PATH
-
-# Export the composer commands
-- export PATH=$HOME/.composer/vendor/bin:$PATH
-
-# BrowsterStack Local installation
-- wget https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip
-- unzip BrowserStackLocal-linux-x64.zip
-
-install:
-- composer install --prefer-dist -o --no-scripts
-
-# install WordPress in the `wordpress` folder
-- cd $WP_FOLDER
-- wp core download --version=$WP_VERSION
-- wp config create --dbname="$DB_NAME" --dbuser="root" --dbpass="" --dbhost="127.0.0.1" --dbprefix="$WP_TABLE_PREFIX"
-- wp core install --url="$WP_URL" --title="Test" --admin_user="$WP_ADMIN_USERNAME" --admin_password="$WP_ADMIN_PASSWORD" --admin_email="admin@$WP_DOMAIN" --skip-email
-
-# add Plugin
-- cp -r $TRAVIS_BUILD_DIR $WP_FOLDER/wp-content/plugins/payplug-woocommerce
-- cd $WP_FOLDER/wp-content/plugins/payplug-woocommerce
-- rm -rf $WP_FOLDER/wp-content/plugins/payplug-woocommerce/tests/
-- rm -rf $WP_FOLDER/wp-content/plugins/payplug-woocommerce/vendor/
-- composer install --prefer-dist -o --no-dev --no-scripts
-- cd $WP_FOLDER
-- wp plugin activate payplug-woocommerce
-
-# Install Woocommerce to needed version
-- wp plugin install --activate woocommerce --version=$WC_VERSION --force
-- wp plugin install --activate wordpress-importer
-- wget https://raw.githubusercontent.com/woocommerce/woocommerce/master/sample-data/sample_products.xml
-
-# Import the products
-- wp import sample_products.xml --authors=create
-
-# Storefront theme
-- wp theme install --activate storefront
-
-# flush rewrite rules to use pretty permalinks
-- wp rewrite structure '/%postname%/' --hard
-- wp plugin list
-- wp search-replace https://payplug.localhost http://payplug.localhost --precise --all-tables
-
-# get back to the build folder
-- cd $TRAVIS_BUILD_DIR
-
-# copy the Nginx configuration file to the default site and replace the path and domain
-- sudo cp bin/travis-nginx-conf /etc/nginx/sites-available/$WP_DOMAIN
-- sudo sed -e "s?%WP_FOLDER%?$WP_FOLDER?g" --in-place /etc/nginx/sites-available/$WP_DOMAIN
-- sudo sed -e "s?%WP_DOMAIN%?$WP_DOMAIN?g" --in-place /etc/nginx/sites-available/$WP_DOMAIN
-
-# enable the WordPress installation
-- sudo ln -s /etc/nginx/sites-available/$WP_DOMAIN /etc/nginx/sites-enabled/
-- cat /etc/nginx/sites-available/$WP_DOMAIN
-#- tnw-install-nginx
-
-before_script:
-- sudo service php5-fpm restart
-- sudo service nginx restart
-
-- codecept build
-- ./BrowserStackLocal -F -k $BROWSERSTACK_KEY --daemon start
+- sudo apt-get -y update
+- sudo apt-get -y install cgroup-bin curl
+- curl -L -o /tmp/lando-latest.deb https://github.com/lando/lando/releases/download/v3.0.0-rc.1/lando-v3.0.0-rc.1.deb
+- sudo dpkg -i /tmp/lando-latest.deb
+- BROWSERSTACK_KEY=$BROWSERSTACK_KEY BROWSERSTACK_USER=$BROWSERSTACK_USERNAME_REAL ./bin/travis-env.sh
+- WP_VERSION=$WP_VERSION WP_LOCALE=en_US WOOCOMMERCE_VERSION=$WC_VERSION PHP_VERSION=$(phpenv version-name) ./bin/lando-start.sh
+- lando launch-browserstack
 
 script:
-# Run unit tests
-- codecept run wpunit
-
-# Front office for acceptance into multiple devices
-- codecept run acceptance --env mobile_android --env desktop --env mobile_ios
+- lando test-wpunit
+- lando test-acceptance-browserstack
