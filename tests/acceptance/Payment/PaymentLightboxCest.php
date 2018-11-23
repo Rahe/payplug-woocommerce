@@ -65,9 +65,10 @@ class PaymentLightboxCest {
 
 		// Wheck we have the lightbox
 		$I->waitForElementVisible( '#iframe-payplug', 60 );
+
+		// Force codeception to execut actions into the iframe by giving it a name.
 		$I->executeJS( 'jQuery("#iframe-payplug").attr("name", "payplug")' );
 		$I->switchToIFrame( 'payplug' );
-
 
 		$I->expect( 'That the order is already created on admin.' );
 		// Pending Transaction
@@ -123,6 +124,8 @@ class PaymentLightboxCest {
 
 		// Wheck we have the lightbox
 		$I->waitForElementVisible( '#iframe-payplug', 60 );
+
+		// Force codeception to execut actions into the iframe by giving it a name.
 		$I->executeJS( 'jQuery("#iframe-payplug").attr("name", "payplug")' );
 		$I->switchToIFrame( 'payplug' );
 
