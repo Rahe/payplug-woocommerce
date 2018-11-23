@@ -1,7 +1,5 @@
 <?php
 
-use \Codeception\Step\Argument\PasswordArgument;
-
 class ConfigurationCest {
 
 	public $setup = false;
