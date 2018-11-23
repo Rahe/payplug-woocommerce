@@ -54,6 +54,32 @@ class CertificedCest {
 	}
 
 	/**
+	 * @param AcceptanceTester $I
+	 *
+	 */
+	public function checkOneLickAndLogout( AcceptanceTester $I ) {
+		$I->wantToTest( 'I login as certified and logout' );
+		$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
+
+		# Login
+		$I->fillField( 'payplug_email', getenv( 'PAYPLUG_TEST_EMAIL' ) );
+		$I->fillField( 'payplug_password', new PasswordArgument( getenv( 'PAYPLUG_TEST_PASSWORD' ) ) );
+		$I->click( '.forminp input[type="submit"]' );
+
+		# Activate the one click
+		$I->click( '#woocommerce_payplug_oneclick' );
+		$I->click( '.submit button' );
+
+		# Check this is not working
+		$I->seeElement( '#woocommerce_payplug_oneclick[checked=checked]' );
+
+		// logout
+		$I->click( '//*[@id="mainform"]/table[2]/tbody/tr/td/p[2]/input[1]' );
+
+		$I->see( 'You must be logged in with your PayPlug account.' );
+	}
+
+	/**
 	 * Basic logout function
 	 *
 	 * @param AcceptanceTester $I
