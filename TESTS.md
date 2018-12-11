@@ -17,7 +17,7 @@ The file `tests/_data/dump.sql` contains the dump loaded at every tests to reset
 ### Installation
 
 1. Install [Lando](https://docs.devwithlando.io/installation/installing.html)
-2. From command line into the project folder execute `./bin/lando-start.sh`
+2. From command line into the project folder execute `./bin/setup-lando.sh`
 3. Copy `.env.dist` file to `.env` file and fill the environment variables
 
 The local url will be https://payplug.lndo.site and credentials will be
