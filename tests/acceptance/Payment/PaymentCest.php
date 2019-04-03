@@ -1,6 +1,7 @@
 <?php
 
 use \Codeception\Step\Argument\PasswordArgument;
+use \Codeception\Util\Locator;
 
 class PaymentCest {
 
@@ -14,6 +15,15 @@ class PaymentCest {
 		if ( ! $this->setup ) {
 			$I->loginAsAdmin();
 			$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
+
+			/**
+			 * Ensure we are logged out
+			 */
+			try {
+				Locator::find( '#mainform input[name="submit_logout"]', [] );
+				$I->click( '#mainform input[name="submit_logout"]' );
+			} catch ( Exception $e ) {
+			}
 
 			$I->fillField( 'payplug_email', getenv( 'PAYPLUG_TEST_EMAIL' ) );
 			$I->fillField( 'payplug_password', new PasswordArgument( getenv( 'PAYPLUG_TEST_PASSWORD' ) ) );
@@ -70,12 +80,12 @@ class PaymentCest {
 		$I->fillField( 'billing_phone', "0123456789" );
 
 		// wait ajax done, submit the form
-		$I->wait( 1 );
-		$I->waitForElement( '#place_order' );
+		$I->waitForElement( '#place_order', 3 );
 		$I->click( '#place_order' );
 
 
-		// Pending Transaction
+		// Pending Transaction, wait for database update
+		$I->wait( 1 );
 		$I->seePostInDatabase( [ 'post_status' => 'wc-pending', 'post_type' => 'shop_order' ] );
 		$post_id = $I->grabLatestEntryByFromDatabase( 'wp_posts', 'ID' );
 
