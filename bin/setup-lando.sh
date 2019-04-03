@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 # Variables
-WOOCOMMERCE_VERSION=${WOOCOMMERCE_VERSION-""}
+WOOCOMMERCE_VERSION="${WOOCOMMERCE_VERSION:-3.5.2}"
 WP_VERSION="${WP_VERSION:-latest}"
-WP_LOCALE="${WP_LOCALE:-fr_FR}"
+WP_LOCALE="${WP_LOCALE:-en_US}"
 PHP_VERSION="${PHP_VERSION:-7.0}"
 
 # Get to the root of the plugin folder
