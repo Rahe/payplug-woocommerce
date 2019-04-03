@@ -1,6 +1,8 @@
 <?php
 
 use \Codeception\Step\Argument\PasswordArgument;
+use \Codeception\Util\Locator;
+
 
 class PaymentLightboxCest {
 
@@ -14,6 +16,15 @@ class PaymentLightboxCest {
 		if ( ! $this->setup ) {
 			$I->loginAsAdmin();
 			$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
+
+			/**
+			 * Ensure we are logged out
+			 */
+			try {
+				Locator::find( '#mainform input[name="submit_logout"]', [] );
+				$I->click( '#mainform input[name="submit_logout"]' );
+			} catch ( Exception $e ) {
+			}
 
 			$I->fillField( 'payplug_email', getenv( 'PAYPLUG_TEST_EMAIL' ) );
 			$I->fillField( 'payplug_password', new PasswordArgument( getenv( 'PAYPLUG_TEST_PASSWORD' ) ) );
@@ -64,13 +75,17 @@ class PaymentLightboxCest {
 		$I->expect( 'That the lightbox is displayed.' );
 
 		// Wheck we have the lightbox
-		$I->waitForElementVisible( '#iframe-payplug', 60 );
+		$I->waitForElement( '#iframe-payplug', 60 );
 
-		// Force codeception to execut actions into the iframe by giving it a name.
+		// Force codeception to e   xecut actions into the iframe by giving it a name.
 		$I->executeJS( 'jQuery("#iframe-payplug").attr("name", "payplug")' );
 		$I->switchToIFrame( 'payplug' );
 
 		$I->expect( 'That the order is already created on admin.' );
+
+		// Wait for Database modified
+		$I->wait( 1 );
+
 		// Pending Transaction
 		$I->seePostInDatabase( [ 'post_status' => 'wc-pending', 'post_type' => 'shop_order', ] );
 		$post_id = $I->grabLatestEntryByFromDatabase( 'wp_posts', 'ID' );
@@ -91,11 +106,20 @@ class PaymentLightboxCest {
 		$I->waitForText( 'Order received' );
 		$I->waitForText( 'Thank you. Your order has been received.' );
 
-		$I->seePostInDatabase( [
-			'ID'          => $post_id,
-			'post_status' => 'wc-processing',
-			'post_type'   => 'shop_order',
-		] );
+		try {
+			$I->seePostInDatabase( [
+				'ID'          => $post_id,
+				'post_status' => 'wc-processing',
+				'post_type'   => 'shop_order',
+			] );
+		} catch ( Exception $exception ) {
+			$I->seePostInDatabase( [
+				'ID'          => $post_id,
+				'post_status' => 'wc-completed',
+				'post_type'   => 'shop_order',
+			] );
+
+		}
 	}
 
 	/**
@@ -130,6 +154,9 @@ class PaymentLightboxCest {
 		$I->switchToIFrame( 'payplug' );
 
 		$I->expect( 'That an order have been created.' );
+
+		// Wait for Database modified
+		$I->wait( 1 );
 
 		// Pending Transaction
 		$I->seePostInDatabase( [ 'post_status' => 'wc-pending', 'post_type' => 'shop_order', ] );
