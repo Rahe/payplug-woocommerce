@@ -4,36 +4,31 @@ config:
   webroot: wordpress
   php: '7.0'
 services:
+  dbTest:
+    type: mariadb
+    creds:
+      user: wpTests
+      password: wpTests
+      database: wpTests
   chromedriver:
     type: compose
     services:
       image: robcherry/docker-chromedriver:latest
       expose:
-      - "4444"
+        - "4444"
       environment:
         CHROMEDRIVER_WHITELISTED_IPS: ""
         CHROMEDRIVER_URL_BASE: "/wd/hub"
         CHROMEDRIVER_EXTRA_ARGS: "--ignore-certificate-errors --reduce-security-for-testing --enable-features=NetworkService"
       security_opt:
-      - seccomp:unconfined
+        - seccomp:unconfined
       command: ["/usr/local/bin/supervisord", "-c", "/etc/supervisord.conf"]
-
-  appserver:
-    run_as_root:
-    - "cd /usr/local/bin && wget https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip && unzip -o BrowserStackLocal-linux-x64.zip && chmod +x BrowserStackLocal && rm BrowserStackLocal-linux-x64.zip"
-    - "mysql -u root -h database -e 'CREATE DATABASE IF NOT EXISTS wpTests;'"
-    - "mysql -u root -h database -e 'GRANT ALL PRIVILEGES ON *.* TO 'wordpress';'"
-    - "mysql -u root -h database -e 'FLUSH PRIVILEGES;'"
 tooling:
   # Browserstack for local/travis
   launch-browserstack:
     service: appserver
     cmd: ./bin/lando-browserstack.sh
   # Test commands
-  test:
-    service: appserver
-    cmd: composer test
-    description: Run all tests, acceptance and unit
   test-wpunit:
     service: appserver
     cmd: composer test-wpunit
@@ -42,11 +37,30 @@ tooling:
     service: appserver
     cmd: composer test-acceptance
     description: Run our acceptance tests
+  test-acceptance-all:
+    service: appserver
+    cmd:
+      - composer test-acceptance MiscCest
+      - composer test-acceptance AdminNotConfigured
+      - composer test-acceptance Refund
+      - composer test-acceptance Payment/PaymentCest
+      - composer test-acceptance Payment/PaymentLightboxCest
+      - composer test-acceptance Payment/PaymentOneClickCest
+    description: Run our acceptance tests
   test-acceptance-browserstack:
     service: appserver
     cmd: composer test-acceptance-browserstack
     description: Run our acceptance tests on browserstack
-
+  test-acceptance-browserstack-all:
+    service: appserver
+    cmd:
+      - composer test-acceptance-browserstack MiscCest
+      - composer test-acceptance-browserstack AdminNotConfigured
+      - composer test-acceptance-browserstack Refund
+      - composer test-acceptance-browserstack Payment/PaymentCest
+      - composer test-acceptance-browserstack Payment/PaymentLightboxCest
+      - composer test-acceptance-browserstack Payment/PaymentOneClickCest
+    description: Run our acceptance tests on browserstack
 events:
   # Run some commands after `lando start`
   post-start:
@@ -55,8 +69,19 @@ events:
     - echo "Copy files in case of editions"
     - cd $LANDO_MOUNT && ./bin/tests-copy.sh
   pre-test-wpunit:
-  - echo "Copy files in case of editions"
-  - cd $LANDO_MOUNT && ./bin/tests-copy.sh
+    - echo "Copy files in case of editions"
+    - cd $LANDO_MOUNT && ./bin/tests-copy.sh
   pre-test-acceptance:
-  - echo "Copy files in case of editions"
-  - cd $LANDO_MOUNT && ./bin/tests-copy.sh
+    - echo "➡ Copy files in case of editions"
+    - cd $LANDO_MOUNT && ./bin/tests-copy.sh
+    - echo "➡ Be sure that the current WordPress is up to date"
+    - echo "➡ Export current database"
+    - wp db export --all-tablespaces /app/tests/_data/current.sql
+    - echo "➡ Import the dump database"
+    - wp db import /app/tests/_data/dump.sql
+    - echo "➡ Update WP DB"
+    - wp core update-db
+    - echo "➡ Export database back to dump"
+    - wp db export --all-tablespaces /app/tests/_data/dump.sql
+    - echo "➡ Restore the previous DB"
+    - wp db import /app/tests/_data/current.sql
