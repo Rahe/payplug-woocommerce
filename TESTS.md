@@ -26,10 +26,9 @@ The local url will be https://payplug.lndo.site and credentials will be
 
 ### Tools
 To test the code, just launch :
-* For all tests(unit, acceptance) : `lando test`
 * For Wpunit tests : `lando test-wpunit`
-* For Acceptance tests : `lando test-acceptance`
-* For BrowserStack tests : `lando test-acceptance-browserstack`
+* For Acceptance tests : `lando test-acceptance-all`
+* For BrowserStack tests : `lando test-acceptance-browserstack-all`
 
 If you need to test the code on BrowserStack, you need to define two environments variables :
 * `BROWSERSTACK_USER` : the username of your browserStack account
