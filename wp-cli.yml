@@ -1,2 +1,3 @@
+path: /app/wordpress/
 apache_modules:
   - mod_rewrites
