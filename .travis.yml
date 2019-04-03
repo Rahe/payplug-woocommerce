@@ -56,8 +56,9 @@ env:
 before_install:
   - sudo apt-get -y update
   - sudo apt-get -y install cgroup-bin curl
-  - curl -L -o /tmp/lando-latest.deb https://github.com/lando/lando/releases/download/v3.0.0-rc.14/lando-v3.0.0-rc.14.deb
+  - curl -fsSL -o /tmp/lando-latest.deb http://installer.kalabox.io/lando-latest-dev.deb
   - sudo dpkg -i /tmp/lando-latest.deb
+  - lando version
   - BROWSERSTACK_KEY=$BROWSERSTACK_KEY BROWSERSTACK_USER=$BROWSERSTACK_USERNAME_REAL ./bin/travis-env.sh
   - WP_VERSION=$WP_VERSION WP_LOCALE=en_US WOOCOMMERCE_VERSION=$WC_VERSION PHP_VERSION=$(phpenv version-name) ./bin/setup-lando.sh
 #- lando launch-browserstack $BROWSERSTACK_KEY
