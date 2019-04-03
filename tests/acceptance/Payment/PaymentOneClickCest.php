@@ -1,6 +1,7 @@
 <?php
 
 use \Codeception\Step\Argument\PasswordArgument;
+use \Codeception\Util\Locator;
 
 class PaymentOneClickCest {
 
@@ -13,11 +14,22 @@ class PaymentOneClickCest {
 		if ( ! $this->setup ) {
 			$I->loginAsAdmin();
 			$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
+			/**
+			 * Ensure we are logged out
+			 */
+			try {
+				Locator::find( '#mainform input[name="submit_logout"]', [] );
+				$I->click( '#mainform input[name="submit_logout"]' );
+			} catch ( Exception $e ) {
+			}
 
 			$I->fillField( 'payplug_email', getenv( 'PAYPLUG_TEST_EMAIL' ) );
 			$I->fillField( 'payplug_password', new PasswordArgument( getenv( 'PAYPLUG_TEST_PASSWORD' ) ) );
 
 			$I->click( '.forminp input[type="submit"]' );
+
+			$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
+
 			$this->setup = true;
 		}
 
@@ -120,7 +132,7 @@ class PaymentOneClickCest {
 		$resource                  = new \StdClass();
 		$resource->card            = new \StdClass();
 		$resource->card->id        = 1;
-		$resource->card->last4     = '3333';
+		$resource->card->last4     = '3331';
 		$resource->card->exp_year  = '2099';
 		$resource->card->exp_month = '01';
 		$resource->card->brand     = 'mastercard';
@@ -147,18 +159,18 @@ class PaymentOneClickCest {
 		// See the element
 		$I->wait( 2 );
 		$I->waitForElement( '#place_order', 10 );
-		$I->see( 'Mastercard ending in 3333' );
+		$I->see( 'Mastercard ending in 3331' );
 
 		$I->expect( 'That I have my card displayed on the payment methods page.' );
 		// See the card on account
 		$I->amOnPage( '/my-account/payment-methods/' );
-		$I->see( 'Mastercard ending in 3333' );
+		$I->see( 'Mastercard ending in 3331' );
 	}
 
 	public function testOneClickCardExpired( AcceptanceTester $I ) {
 		$I->wantToTest( 'That the expired card isnt available for payment ' );
 
-		$gateway                   = WC()->payment_gateways()->payment_gateways()['payplug'];
+		$gateway = WC()->payment_gateways()->payment_gateways()['payplug'];
 
 		/**
 		 * Expired card.
