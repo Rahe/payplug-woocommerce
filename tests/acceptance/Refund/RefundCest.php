@@ -1,6 +1,7 @@
 <?php
 
 use \Codeception\Step\Argument\PasswordArgument;
+use \Codeception\Util\Locator;
 
 class RefundCest {
 
@@ -13,11 +14,22 @@ class RefundCest {
 		 * 2. Create and validate an order with payplug API
 		 */
 		if ( ! $this->setup ) {
-			$I->amOnAdminPage( 'post.php' );
-
 			$I->loginAsAdmin();
 
+			$I->amOnAdminPage( 'post.php' );
+
+
 			$I->amOnAdminPage( 'admin.php?page=wc-settings&tab=checkout&section=payplug' );
+
+			/**
+			 * Ensure we are logged out
+			 */
+			try {
+				if ( Locator::find( '#mainform input[name="submit_logout"]', [] ) ) {
+					$I->click( '#mainform input[name="submit_logout"]' );
+				}
+			} catch ( Exception $e ) {
+			}
 
 			$I->fillField( 'payplug_email', getenv( 'PAYPLUG_TEST_EMAIL' ) );
 			$I->fillField( 'payplug_password', new PasswordArgument( getenv( 'PAYPLUG_TEST_PASSWORD' ) ) );
@@ -84,11 +96,11 @@ class RefundCest {
 	 * @before setup_order
 	 */
 	public function testRefundTotalNote( AcceptanceTester $I ) {
-		$I->wantToTest( 'Total Refund and note displayed' );
+		$I->amGoingTo( 'Total Refund and note displayed' );
+		$I->loginAsAdmin();
 
 		$order = wc_get_order( $this->order_id );
-		$I->loginAsAdmin();
-		$I->amOnUrl( get_edit_post_link( $this->order_id ) );
+		$I->amOnUrl( admin_url( sprintf( 'post.php?post=%s&action=edit', $this->order_id ) ) );
 
 		// Show the controls
 		$I->click( 'button.refund-items' );
@@ -106,7 +118,6 @@ class RefundCest {
 		$I->wait( 3 );
 
 		$I->waitForElementVisible( 'tr.refund ', 60 );
-		$I->makeScreenshot( 'testRefundTotalNoteend' );
 
 
 		/**
@@ -115,7 +126,7 @@ class RefundCest {
 		$refunds = $order->get_refunds();
 		$refund  = $refunds[0];
 
-		$I->canSee( sprintf( 'Refund #%s', $refund->get_id() ) );
+		$I->canSee( 'Refund #' . $refund->get_id() );
 
 		/**
 		 * Check status modified
@@ -126,7 +137,7 @@ class RefundCest {
 			'post_type'   => 'shop_order',
 		] );
 
-		$I->canSee( sprintf( 'Refund %s', $amount ) );
+		$I->canSee( sprintf( 'Refunded %s', $amount ) );
 	}
 
 	/**
@@ -136,11 +147,11 @@ class RefundCest {
 	 */
 	public function testRefundPartialNote( AcceptanceTester $I ) {
 		$I->wantToTest( 'Total Refund and note displayed' );
-
-		$order = wc_get_order( $this->order_id );
-		$status = $order->get_status();
 		$I->loginAsAdmin();
-		$I->amOnUrl( get_edit_post_link( $this->order_id ) );
+
+		$order  = wc_get_order( $this->order_id );
+		$status = $order->get_status();
+		$I->amOnUrl( admin_url( sprintf( 'post.php?post=%s&action=edit', $this->order_id ) ) );
 
 		// Show the controls
 		$I->click( 'button.refund-items' );
@@ -158,8 +169,6 @@ class RefundCest {
 		$I->wait( 3 );
 
 		$I->waitForElementVisible( 'tr.refund ', 60 );
-		$I->makeScreenshot( 'testRefundTotalNoteend' );
-
 
 		/**
 		 * Check line added
@@ -172,10 +181,10 @@ class RefundCest {
 		 */
 		$I->seePostInDatabase( [
 			'ID'          => $this->order_id,
-			'post_status' => $status,
+			'post_status' => 'wc-'.$status,
 			'post_type'   => 'shop_order',
 		] );
 
-		$I->canSee( sprintf( 'Refund #%s', $refund->get_id() ) );
+		$I->canSee( 'Refund #' . $refund->get_id() );
 	}
 }
