@@ -63,5 +63,5 @@ before_install:
 #- lando launch-browserstack $BROWSERSTACK_KEY
 
 script:
-- lando test-wpunit-all
-- lando test-acceptance-all
+- lando test-wpunit-all --verbose
+- lando test-acceptance-all --verbose
