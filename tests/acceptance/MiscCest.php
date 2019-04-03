@@ -18,5 +18,8 @@ class MiscCest {
 
 		// Notice to activate Woocommerce
 		$I->see( 'PayPlug requires an active version of WooCommerce' );
+
+		// Reactive Woocommerce for next tests
+		$I->activatePlugin('woocommerce');
 	}
 }
