@@ -76,6 +76,9 @@ events:
     - echo "Copy files in case of editions"
     - cd $LANDO_MOUNT && ./bin/tests-copy.sh
   pre-test-acceptance:
+  pre-test-acceptance-all:
+  pre-test-acceptance-browserstack:
+  pre-test-acceptance-browserstack-all:
     - echo "➡ Copy files in case of editions"
     - cd $LANDO_MOUNT && ./bin/tests-copy.sh
     - echo "➡ Be sure that the current WordPress is up to date"
