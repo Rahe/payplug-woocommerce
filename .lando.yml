@@ -23,9 +23,9 @@ services:
       security_opt:
         - seccomp:unconfined
       command: ["/usr/local/bin/supervisord", "-c", "/etc/supervisord.conf"]
-    appserver:
-      run_as_root:
-        - "cd /usr/local/bin && wget https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip && unzip -o BrowserStackLocal-linux-x64.zip && chmod +x BrowserStackLocal && rm BrowserStackLocal-linux-x64.zip"
+  appserver:
+    run_as_root:
+      - "cd /usr/local/bin && wget https://www.browserstack.com/browserstack-local/BrowserStackLocal-linux-x64.zip && unzip -o BrowserStackLocal-linux-x64.zip && chmod +x BrowserStackLocal && rm BrowserStackLocal-linux-x64.zip"
 
 tooling:
   # Browserstack for local/travis
