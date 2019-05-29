@@ -59,5 +59,6 @@ before_install:
 
 script:
   - true
-  - lando test-wpunit-all --verbose
+  - lando test-wpunit --verbose
   - lando test-acceptance-all --verbose
+  - lando test-acceptance-browserstack-all --verbose
