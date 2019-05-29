@@ -5,7 +5,10 @@ language: php
 
 notifications:
   email: false
-
+addons:
+  apt:
+    packages:
+      - docker-ce
 php:
   #- '5.6'
   #- '7.0'
