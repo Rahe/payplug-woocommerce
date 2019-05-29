@@ -141,7 +141,6 @@ before_script:
   
   - codecept build
   - ./BrowserStackLocal -F -k $BROWSERSTACK_KEY --daemon start
-
 script:
   # Run unit tests
   - codecept run wpunit
