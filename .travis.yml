@@ -21,13 +21,6 @@ cache:
   directories:
     - vendor
     - $HOME/.composer/cache/files
-
-addons:
-  browserstack:
-    username: "johannalucie1"
-    access_key:
-      secure: "CWH7/TpwC6pmeMa6xD5p27yEdXfd39fGqpTBfyfn8sl9HF1pCjkgvdeNQcU+aqF89UlKbHY+32o6X+SOROyqYhsQMWR2ufXTS+3r7LnAhPwRueailgjVFV98u/1rKXVxbgxOuakjB7Cyihyr3zzVbSIxcfdLHrMIOSwHVecD6mXCTTSvcalcDC++ectDW7qPtcB405LEQmBPNdKX60iJcGBF9YyEkxGqisH9oRegCklUE8/blaRuNKtihaUIiS5geKQ0GLnE6dFnsTMzvlJ8ICUHs0e/q8Yv+fciIDNgGr7OOKw8Wbaz8AJU+Oa33J9V6o2zZgoBRPQYz41oqEwsM5c0jCHsKxxovHcsdng76uc62Z0nBs39N75eJebQc96RqKtCo0bjQnMhYCMwKQZfkbuHwTrUPy+Bhf71tyC7mC/ibqgx49Ha9WvJCTdCJREo4uJJOJgG23/Polf36/SU6wC51IiETjCBs0vaz1U2+k+tnMx77GW6xs22oa4BGZo9P36EIgV/LVxN983ZNJILYgbVA2igI0OLjSTDTn/jMrcj/AKjX/jxALA5CBQiIFov79EeOto+s7WeprkTxt9qwy35mlKwk029QrOa+Vb8SlvpAp32/waB3lMPvTtpnpdcY+ICh2ITUUEuN4Ny2HViwupQFlbu9wc3f5axzubq9sU="
-    forcelocal: true
 env:
   global:
     - WP_FOLDER="/wordpress"
@@ -62,7 +55,7 @@ before_install:
   - lando version
   - BROWSERSTACK_KEY=$BROWSERSTACK_KEY BROWSERSTACK_USER=$BROWSERSTACK_USERNAME_REAL ./bin/travis-env.sh
   - WP_VERSION=$WP_VERSION WP_LOCALE=en_US WOOCOMMERCE_VERSION=$WC_VERSION PHP_VERSION=$(phpenv version-name) ./bin/setup-lando.sh
-#- lando launch-browserstack $BROWSERSTACK_KEY
+  - lando launch-browserstack $BROWSERSTACK_KEY
 
 script:
   - true
