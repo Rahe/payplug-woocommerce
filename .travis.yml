@@ -70,5 +70,5 @@ script:
   - WP_VERSION=$WP_VERSION WP_LOCALE=en_US WOOCOMMERCE_VERSION=$WC_VERSION PHP_VERSION=$(phpenv version-name) ./bin/setup-lando.sh
   - lando launch-browserstack $BROWSERSTACK_KEY
   - lando test-wpunit --verbose
-  - lando test-acceptance-all --verbose
+  #- lando test-acceptance-all --verbose
   - lando test-acceptance-browserstack-all --verbose
