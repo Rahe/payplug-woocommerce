@@ -101,8 +101,6 @@ lando wp theme install \
 
 # Make the folder for plugin, copy files initially and folder
 PLUGIN_FOLDER="wordpress/wp-content/plugins/payplug-woocommerce/"
-pwd
-ls -alh
 mkdir -p $PLUGIN_FOLDER
 cp -R payplug.php $PLUGIN_FOLDER
 cp -R composer.json $PLUGIN_FOLDER
@@ -110,6 +108,7 @@ cp -R composer.lock $PLUGIN_FOLDER
 cp -R src $PLUGIN_FOLDER
 cp -R assets $PLUGIN_FOLDER
 cp -R languages $PLUGIN_FOLDER
+cp woocommerce-compat.php $PLUGIN_FOLDER
 cd $PLUGIN_FOLDER
 
 lando composer install --no-dev --prefer-dist -o
