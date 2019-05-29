@@ -71,4 +71,4 @@ script:
   - lando launch-browserstack $BROWSERSTACK_KEY
   - lando test-wpunit --verbose
   #- lando test-acceptance-all --verbose
-  - lando test-acceptance-browserstack-all --verbose
+  - BROWSERSTACK_KEY=$BROWSERSTACK_KEY BROWSERSTACK_USER=$BROWSERSTACK_USERNAME_REAL lando test-acceptance-browserstack-all --verbose
