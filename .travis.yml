@@ -27,6 +27,7 @@ cache:
 env:
   global:
     - WP_ROOT_FOLDER="/app/wordpress/"
+    - WP_ADMIN_PATH="/wp-admin"
     - WP_URL="http://payplug.lndo.site"
     - WP_DOMAIN="payplug.lndo.site"
     - DB_NAME="wordpress"
@@ -39,6 +40,11 @@ env:
     - TEST_DB_USER="wpTests"
     - TEST_DB_PASSWORD="wpTests"
     - TEST_TABLE_PREFIX="wp_"
+    # Admin access config
+    - ADMIN_EMAIL="admin@payplug.lndo.site"
+    - ADMIN_USERNAME=admin
+    - ADMIN_PASSWORD=admin
+
 
   matrix:
     - WP_VERSION=latest WC_VERSION=2.6.14
@@ -58,6 +64,7 @@ before_install:
   - lando version
 
 script:
+  - cp .env.dist .env
   - true
   - BROWSERSTACK_KEY=$BROWSERSTACK_KEY BROWSERSTACK_USER=$BROWSERSTACK_USERNAME_REAL ./bin/travis-env.sh
   - WP_VERSION=$WP_VERSION WP_LOCALE=en_US WOOCOMMERCE_VERSION=$WC_VERSION PHP_VERSION=$(phpenv version-name) ./bin/setup-lando.sh
